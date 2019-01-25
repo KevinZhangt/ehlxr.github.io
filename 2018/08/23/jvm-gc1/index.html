@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>JVM-垃圾回收（一） - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="在 JVM 运行时数据区域中，程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。垃圾回收主要是针对 Java 堆和方法区进行。
+一、判断对象状态 JVM 在回收一个对象时，首先要判断这个对象的状态，如果判断对象为无效的（没有被任何对象或变量引用），则需要被 JVM 垃圾回收器回收。
+1.1 引用计数算法 给对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数不为 0 的对象仍然存活。
+" />
+<meta name="keywords" content="JVM,, Java,, gc" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2018/08/23/jvm-gc1/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="JVM-垃圾回收（一）" />
+<meta property="og:description" content="在 JVM 运行时数据区域中，程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。垃圾回收主要是针对 Java 堆和方法区进行。
+
+一、判断对象状态
+
+JVM 在回收一个对象时，首先要判断这个对象的状态，如果判断对象为无效的（没有被任何对象或变量引用），则需要被 JVM 垃圾回收器回收。
+
+1.1 引用计数算法
+
+给对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数不为 0 的对象仍然存活。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2018/08/23/jvm-gc1/" /><meta property="article:published_time" content="2018-08-23T11:25:52&#43;00:00"/>
+<meta property="article:modified_time" content="2018-08-23T11:25:52&#43;00:00"/>
+
+<meta itemprop="name" content="JVM-垃圾回收（一）">
+<meta itemprop="description" content="在 JVM 运行时数据区域中，程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。垃圾回收主要是针对 Java 堆和方法区进行。
+
+一、判断对象状态
+
+JVM 在回收一个对象时，首先要判断这个对象的状态，如果判断对象为无效的（没有被任何对象或变量引用），则需要被 JVM 垃圾回收器回收。
+
+1.1 引用计数算法
+
+给对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数不为 0 的对象仍然存活。">
+
+
+<meta itemprop="datePublished" content="2018-08-23T11:25:52&#43;00:00" />
+<meta itemprop="dateModified" content="2018-08-23T11:25:52&#43;00:00" />
+<meta itemprop="wordCount" content="2528">
+
+
+
+<meta itemprop="keywords" content="JVM,Java," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM-垃圾回收（一）"/>
+<meta name="twitter:description" content="在 JVM 运行时数据区域中，程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。垃圾回收主要是针对 Java 堆和方法区进行。
+
+一、判断对象状态
+
+JVM 在回收一个对象时，首先要判断这个对象的状态，如果判断对象为无效的（没有被任何对象或变量引用），则需要被 JVM 垃圾回收器回收。
+
+1.1 引用计数算法
+
+给对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数不为 0 的对象仍然存活。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">JVM-垃圾回收（一）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2018-08-23 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/java-%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/"> Java 开发技术 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 2528 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 6 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-判断对象状态">一、判断对象状态</a>
+<ul>
+<li><a href="#1-1-引用计数算法">1.1 引用计数算法</a></li>
+<li><a href="#1-2-可达性分析算法">1.2 可达性分析算法</a></li>
+</ul></li>
+<li><a href="#二-垃圾回收过程">二、垃圾回收过程</a>
+<ul>
+<li><a href="#2-1-第一次标记">2.1 第一次标记</a></li>
+<li><a href="#2-2-第二次标记">2.2 第二次标记</a></li>
+<li><a href="#2-3-对象重生或死亡">2.3 对象重生或死亡</a></li>
+</ul></li>
+<li><a href="#三-方法区的回收">三、方法区的回收</a></li>
+<li><a href="#四-引用类型">四、引用类型</a>
+<ul>
+<li><a href="#4-1-强引用">4.1 强引用</a></li>
+<li><a href="#4-2-软引用">4.2 软引用</a></li>
+<li><a href="#4-3-弱引用">4.3 弱引用</a></li>
+<li><a href="#4-4-虚引用">4.4 虚引用</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p>在 JVM 运行时数据区域中，程序计数器、虚拟机栈和本地方法栈这三个区域属于线程私有的，只存在于线程的生命周期内，线程结束之后也会消失，因此不需要对这三个区域进行垃圾回收。垃圾回收主要是针对 Java 堆和方法区进行。</p>
+
+<h2 id="一-判断对象状态">一、判断对象状态</h2>
+
+<p>JVM 在回收一个对象时，首先要判断这个对象的状态，如果判断对象为无效的（没有被任何对象或变量引用），则需要被 JVM 垃圾回收器回收。</p>
+
+<h3 id="1-1-引用计数算法">1.1 引用计数算法</h3>
+
+<p>给对象添加一个引用计数器，当对象增加一个引用时计数器加 1，引用失效时计数器减 1。引用计数不为 0 的对象仍然存活。</p>
+
+<pre><code class="language-java">public class ReferenceCountingGC {
+    public Object instance = null;
+
+    public static void testGC() {
+        ReferenceCountingGC objA = new ReferenceCountingGC();
+        ReferenceCountingGC objB = new ReferenceCountingGC();
+        objA.instance = objB;
+        objB.instance = objA;
+
+        objA = null;
+        objB = null;
+
+        // 假设在这行发生 GC，objA 和 objB 是否能被回收？
+        System.gc();
+    }
+}
+</code></pre>
+
+<p><code>testGC()</code> 方法执行后，<code>objA</code> 和 <code>objB</code> 不会被垃圾回收器回收，因为<strong>两个对象出现了循环引用，引用计数器永远不为 0，导致无法对它们进行回收</strong>。</p>
+
+<p>虽然引用计数算法简单、高效，但是因为存在循环引用的问题，所以 JVM 并没有使用引用计数算法标记对象状态。</p>
+
+<h3 id="1-2-可达性分析算法">1.2 可达性分析算法</h3>
+
+<p><strong>可达性分析（Tracing GC）</strong>通过 <strong>GC Roots</strong> 作为起始节点向下进行搜索，GC Roots 搜索的经过的路径称为<strong>引用链（Reference Chain）</strong>，能够到达到的对象都是存活的（也就是引用链上的对象），不可达的对象被标记为无效的。</p>
+
+<p><img src="https://wx4.sinaimg.cn/large/687148dbly1ftcw0cnpk7j20ez08d0sz.jpg" alt="" /></p>
+
+<p>如图 Object5、Object6 和 Object7 虽然相互存在引用关系，但是 GC Roots 不可达，形成不了引用链，所以会被标记为无效的对象。</p>
+
+<p>JVM 使用该算法来判断对象是否可被回收，在 Java 中 GC Roots 一般包含以下内容：</p>
+
+<ul>
+<li>虚拟机栈中引用的对象</li>
+<li>本地方法栈中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中的常量引用的对象</li>
+</ul>
+
+<p>只有引用类型的变量才有可能被认为是 GC Roots，值类型的变量永远不被认为是 GC Roots。而且 GC Roots 并不包括堆中对象所引用的对象，这样就不会出现循环引用。</p>
+
+<p>可作为 GC Roots 的节点主要在全局性的引用与执行上下文中，GC Roots 必须是当前存活的引用类型对象。GC 管理的区域是 Java 堆，而虚拟机栈、方法区和本地方法栈不被 GC 所管理，因此选用这些区域内引用的对象作为 GC Roots，是不会被 GC 所回收的。其中虚拟机栈和本地方法栈都是线程私有的内存区域，只要线程没有终止，就能确保它们中引用的对象的存活。而方法区中类静态属性引用的对象是显然存活的。常量引用的对象在当前可能存活，因此，也可能是 GC Roots 的一部分。</p>
+
+<h2 id="二-垃圾回收过程">二、垃圾回收过程</h2>
+
+<p>即使在可达性分析算法中不可达的对象，也不是一定会死亡的，它们暂时都处于 “缓刑” 阶段，要真正宣告一个对象 “死亡”，至少要经历两次标记过程。</p>
+
+<h3 id="2-1-第一次标记">2.1 第一次标记</h3>
+
+<p>如果对象在进行可达性分析后发现没有与 GC Roots 相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是该对象是否覆盖了 <code>finalize()</code> 方法：</p>
+
+<ul>
+<li>若已覆盖该方法，并该对象的 <code>finalize()</code> 方法还没有被执行过，那么就会将 <code>finalize()</code> 扔到 F-Queue 队列中。</li>
+<li>若未覆盖该方法，或者该对象的 <code>finalize()</code> 方法已经被执行过，则直接回收释放对象内存。</li>
+</ul>
+
+<h3 id="2-2-第二次标记">2.2 第二次标记</h3>
+
+<p>JVM 会自动建立一个低优先级的 Finalizer 线程去执行执行 F-Queue 队列中的 <code>finalize()</code> 方法。为了防止 F-Queue 队列中的其它对象长时间处于等待状态，而导致整个内存回收系统崩溃，一个对象在 <code>finalize()</code> 方法中执行缓慢，或者发生了死循环（更极端的情况），JVM 就直接停止其执行，将该对象清除回收。所以 JVM 不会让 F-Queue 队列等待所有的 <code>finalize()</code> 方法都执行结束。</p>
+
+<h3 id="2-3-对象重生或死亡">2.3 对象重生或死亡</h3>
+
+<p>如果某个对象的 <code>finalize()</code> 方法时被执行时，与引用链上的任何一个对象建立了关联（例如：把自己（this 关键字）赋值给某个类变量或者对象的成员变量），那么该对象就在第二次标记时被移出 “即将回收” 的集合；如果没有，那么就会被垃圾收集器清除回收。</p>
+
+<p>任何一个对象的 <code>finalize()</code> 方法都只会被 JVM 调用一次，所以自救也只能进行一次，如果回收的对象之前调用了 <code>finalize()</code> 方法，后面回收时就不会调用 <code>finalize()</code> 方法了。</p>
+
+<p>使用 <code>finalize()</code> 方法来 “拯救” 对象是不值得提倡的，因为它不是 C/C++ 中的析构函数，而是 Java 刚诞生时为了使 C/C++ 程序员更容易接受它所做的一个妥协。它的运行代价高昂，不确定性大，无法保证各个对象的调用顺序。<code>finalize()</code> 能做的工作，使用 <code>try-finally</code> 或者其它方法都更适合、及时。</p>
+
+<h2 id="三-方法区的回收">三、方法区的回收</h2>
+
+<p>因为在 JDK 8 之前方法区主要存放永久代对象，而永久代对象的回收率比新生代差很多，因此在方法区上进行回收性价比不高。</p>
+
+<p>主要是对常量池的回收和对类的卸载。</p>
+
+<p>类的卸载条件很多，需要满足以下三个条件，并且满足了也不一定会被卸载：</p>
+
+<ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 ClassLoader 已经被回收。</li>
+<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，也就无法在任何地方通过反射访问该类方法。</li>
+</ul>
+
+<p>可以通过 -Xnoclassgc 参数来控制是否对类进行卸载。</p>
+
+<p>在大量使用反射、动态代理、CGLib 等 ByteCode 框架、动态生成 JSP 以及 OSGi 这类频繁自定义 ClassLoader 的场景都需要虚拟机具备类卸载功能，以保证不会出现内存溢出。</p>
+
+<h2 id="四-引用类型">四、引用类型</h2>
+
+<p>无论是通过引用计算算法判断对象的引用数量，还是通过可达性分析算法判断对象是否可达，判定对象是否可被回收都与引用有关。</p>
+
+<p>Java 具有四种强度不同的引用类型。</p>
+
+<h3 id="4-1-强引用">4.1 强引用</h3>
+
+<p>被强引用关联的对象不会被垃圾收集器回收。</p>
+
+<p>使用 new 一个新对象的方式来创建强引用。</p>
+
+<pre><code class="language-java">Object obj = new Object();
+</code></pre>
+
+<h3 id="4-2-软引用">4.2 软引用</h3>
+
+<p>被软引用关联的对象，只有在内存不够的情况下才会被回收。</p>
+
+<p>使用 SoftReference 类来创建软引用。</p>
+
+<pre><code class="language-java">Object obj = new Object();
+SoftReference&lt;Object&gt; sf = new SoftReference&lt;Object&gt;(obj);
+obj = null;  // 使对象只被软引用关联
+</code></pre>
+
+<h3 id="4-3-弱引用">4.3 弱引用</h3>
+
+<p>被弱引用关联的对象一定会被垃圾收集器回收，也就是说它只能存活到下一次垃圾收集发生之前。</p>
+
+<p>使用 WeakReference 类来实现弱引用。</p>
+
+<pre><code class="language-java">Object obj = new Object();
+WeakReference&lt;Object&gt; wf = new WeakReference&lt;Object&gt;(obj);
+obj = null;
+</code></pre>
+
+<p>WeakHashMap 的 Entry 继承自 WeakReference，主要用来实现缓存。</p>
+
+<pre><code class="language-java">private static class Entry&lt;K,V&gt; extends WeakReference&lt;Object&gt; implements Map.Entry&lt;K,V&gt;
+</code></pre>
+
+<p>Tomcat 中的 ConcurrentCache 就使用了 WeakHashMap 来实现缓存功能。ConcurrentCache 采取的是分代缓存，经常使用的对象放入 eden 中，而不常用的对象放入 longterm。eden 使用 ConcurrentHashMap 实现，longterm 使用 WeakHashMap，保证了不常使用的对象容易被回收。</p>
+
+<pre><code class="language-java">public final class ConcurrentCache&lt;K, V&gt; {
+
+    private final int size;
+
+    private final Map&lt;K, V&gt; eden;
+
+    private final Map&lt;K, V&gt; longterm;
+
+    public ConcurrentCache(int size) {
+        this.size = size;
+        this.eden = new ConcurrentHashMap&lt;&gt;(size);
+        this.longterm = new WeakHashMap&lt;&gt;(size);
+    }
+
+    public V get(K k) {
+        V v = this.eden.get(k);
+        if (v == null) {
+            v = this.longterm.get(k);
+            if (v != null)
+                this.eden.put(k, v);
+        }
+        return v;
+    }
+
+    public void put(K k, V v) {
+        if (this.eden.size() &gt;= size) {
+            this.longterm.putAll(this.eden);
+            this.eden.clear();
+        }
+        this.eden.put(k, v);
+    }
+}
+</code></pre>
+
+<h3 id="4-4-虚引用">4.4 虚引用</h3>
+
+<p>又称为幽灵引用或者幻影引用。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用取得一个对象实例。</p>
+
+<p>为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</p>
+
+<p>使用 PhantomReference 来实现虚引用。</p>
+
+<pre><code class="language-java">Object obj = new Object();
+PhantomReference&lt;Object&gt; pf = new PhantomReference&lt;Object&gt;(obj);
+obj = null;
+</code></pre>
+
+<hr />
+
+<p><!-- [1]: /images/post/jvm-gc-1.jpg
+ --></p>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2018/08/23/jvm-gc1/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/jvm/">JVM</a>
+          
+          <a href="/tags/java/">Java</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2018/08/23/jvm-gc2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">JVM-垃圾回收（二）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2018/08/02/java-positional-operator/">
+            <span class="next-text nav-default">Java 位运算笔记</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '3f424b4927f0c001bd6838c9db0eedcf',
+        title: 'JVM-垃圾回收（一）',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

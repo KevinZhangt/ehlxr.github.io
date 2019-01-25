@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CentOS 安装 rar、zip 解压缩 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="Windows 系统压缩的 rar 和 zip 文件，在 Linux 系统下是无法通过 tar 命令解压缩的，需要使用 rar 和 zip 命令来解压缩。下面记录一下 rar 和 zip 安装和简单的使用。
+一、rar 安装使用 Linux 系统下使用 rarlinux 解压缩 rar 压缩文件，下载页面：http://www.rarsoft.com/download.htm。
+1.1 下载系统对应的版本 $ wget http://www.rarsoft.com/rar/rarlinux-x64-5.4.0.tar.gz  1.2 解压、安装 $ tar -zxvf rarlinux-x64-5.4.0.tar.gz $ cd rar $ make " />
+<meta name="keywords" content="rar,, zip,, CentOS,, Linux" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2016/12/22/centos-%E5%AE%89%E8%A3%85-rarzip-%E8%A7%A3%E5%8E%8B%E7%BC%A9/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="CentOS 安装 rar、zip 解压缩" />
+<meta property="og:description" content="Windows 系统压缩的 rar 和 zip 文件，在 Linux 系统下是无法通过 tar 命令解压缩的，需要使用 rar 和 zip 命令来解压缩。下面记录一下 rar 和 zip 安装和简单的使用。
+
+一、rar 安装使用
+
+Linux 系统下使用 rarlinux 解压缩 rar 压缩文件，下载页面：http://www.rarsoft.com/download.htm。
+
+1.1 下载系统对应的版本
+
+$ wget http://www.rarsoft.com/rar/rarlinux-x64-5.4.0.tar.gz
+
+
+1.2 解压、安装
+
+$ tar -zxvf rarlinux-x64-5.4.0.tar.gz
+$ cd rar
+$ make
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2016/12/22/centos-%E5%AE%89%E8%A3%85-rarzip-%E8%A7%A3%E5%8E%8B%E7%BC%A9/" /><meta property="article:published_time" content="2016-12-22T15:39:45&#43;00:00"/>
+<meta property="article:modified_time" content="2016-12-22T15:39:45&#43;00:00"/>
+
+<meta itemprop="name" content="CentOS 安装 rar、zip 解压缩">
+<meta itemprop="description" content="Windows 系统压缩的 rar 和 zip 文件，在 Linux 系统下是无法通过 tar 命令解压缩的，需要使用 rar 和 zip 命令来解压缩。下面记录一下 rar 和 zip 安装和简单的使用。
+
+一、rar 安装使用
+
+Linux 系统下使用 rarlinux 解压缩 rar 压缩文件，下载页面：http://www.rarsoft.com/download.htm。
+
+1.1 下载系统对应的版本
+
+$ wget http://www.rarsoft.com/rar/rarlinux-x64-5.4.0.tar.gz
+
+
+1.2 解压、安装
+
+$ tar -zxvf rarlinux-x64-5.4.0.tar.gz
+$ cd rar
+$ make
+">
+
+
+<meta itemprop="datePublished" content="2016-12-22T15:39:45&#43;00:00" />
+<meta itemprop="dateModified" content="2016-12-22T15:39:45&#43;00:00" />
+<meta itemprop="wordCount" content="594">
+
+
+
+<meta itemprop="keywords" content="rar,zip,CentOS,Linux," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CentOS 安装 rar、zip 解压缩"/>
+<meta name="twitter:description" content="Windows 系统压缩的 rar 和 zip 文件，在 Linux 系统下是无法通过 tar 命令解压缩的，需要使用 rar 和 zip 命令来解压缩。下面记录一下 rar 和 zip 安装和简单的使用。
+
+一、rar 安装使用
+
+Linux 系统下使用 rarlinux 解压缩 rar 压缩文件，下载页面：http://www.rarsoft.com/download.htm。
+
+1.1 下载系统对应的版本
+
+$ wget http://www.rarsoft.com/rar/rarlinux-x64-5.4.0.tar.gz
+
+
+1.2 解压、安装
+
+$ tar -zxvf rarlinux-x64-5.4.0.tar.gz
+$ cd rar
+$ make
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">CentOS 安装 rar、zip 解压缩</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2016-12-22 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/linux/"> Linux </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 594 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 2 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#一-rar-安装使用">一、rar 安装使用</a>
+<ul>
+<li><a href="#1-1-下载系统对应的版本">1.1 下载系统对应的版本</a></li>
+<li><a href="#1-2-解压-安装">1.2 解压、安装</a></li>
+<li><a href="#1-3-常用-rar-命令">1.3 常用 rar 命令</a></li>
+<li><a href="#1-4-常见错误原因分析">1.4 常见错误原因分析</a>
+<ul>
+<li><a href="#1-4-1-如果在运行命令-rar-时-出现下面这个问题">1.4.1 如果在运行命令 rar 时,出现下面这个问题</a></li>
+<li><a href="#1-4-2-使用-rar-的时候出现错误">1.4.2 使用 rar 的时候出现错误</a></li>
+<li><a href="#1-4-3-重新安装-glibc-i686-以后还有如下类似错误">1.4.3 重新安装 glibc.i686 以后还有如下类似错误</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#二-zip-unzip-安装使用">二、zip/unzip 安装使用</a>
+<ul>
+<li><a href="#2-1-检查是否有包含-zip-unzip-的软件包">2.1 检查是否有包含 zip（unzip） 的软件包</a></li>
+<li><a href="#2-2-安装-zip-unzip">2.2 安装 zip、unzip</a></li>
+<li><a href="#2-3-常用命令">2.3 常用命令</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p>Windows 系统压缩的 rar 和 zip 文件，在 Linux 系统下是无法通过 tar 命令解压缩的，需要使用 rar 和 zip 命令来解压缩。下面记录一下 rar 和 zip 安装和简单的使用。</p>
+
+<h1 id="一-rar-安装使用">一、rar 安装使用</h1>
+
+<p>Linux 系统下使用 rarlinux 解压缩 rar 压缩文件，下载页面：<a href="http://www.rarsoft.com/download.htm。">http://www.rarsoft.com/download.htm。</a></p>
+
+<h2 id="1-1-下载系统对应的版本">1.1 下载系统对应的版本</h2>
+
+<pre><code class="language-bash">$ wget http://www.rarsoft.com/rar/rarlinux-x64-5.4.0.tar.gz
+</code></pre>
+
+<h2 id="1-2-解压-安装">1.2 解压、安装</h2>
+
+<pre><code class="language-bash">$ tar -zxvf rarlinux-x64-5.4.0.tar.gz
+$ cd rar
+$ make
+</code></pre>
+
+<p>看见下面这些信息就是安装成功了：</p>
+
+<pre><code class="language-bash">mkdir -p /usr/local/bin
+mkdir -p /usr/local/lib
+cp rar unrar /usr/local/bin
+cp rarfiles.lst /etc
+cp default.sfx /usr/local/lib
+</code></pre>
+
+<h2 id="1-3-常用-rar-命令">1.3 常用 rar 命令</h2>
+
+<pre><code class="language-bash">$ rar x centos.rar # 解压 centos.rar 到当前目录
+$ rar centos.rar ./piaoyi.org/ # 将 piaoyi.org 目录打包为 centos.rar
+</code></pre>
+
+<h2 id="1-4-常见错误原因分析">1.4 常见错误原因分析</h2>
+
+<h3 id="1-4-1-如果在运行命令-rar-时-出现下面这个问题">1.4.1 如果在运行命令 rar 时,出现下面这个问题</h3>
+
+<pre><code class="language-bash">rar: /lib/i686/nosegneg/libc.so.6: version 'GLIBC_2.7' not found (required by rar)
+</code></pre>
+
+<p>解决办法：</p>
+
+<pre><code class="language-bash">$ cp rar_static /usr/local/bin/rar
+</code></pre>
+
+<h3 id="1-4-2-使用-rar-的时候出现错误">1.4.2 使用 rar 的时候出现错误</h3>
+
+<pre><code class="language-bash">bash: /usr/local/bin/rar: /lib/ld-linux.so.2: bad ELF interpreter: No such file or directory
+</code></pre>
+
+<p>因为 64 位系统中安装了 32 位程序，解决方法：</p>
+
+<pre><code class="language-bash">$ yum install glibc.i686
+</code></pre>
+
+<h3 id="1-4-3-重新安装-glibc-i686-以后还有如下类似错误">1.4.3 重新安装 glibc.i686 以后还有如下类似错误</h3>
+
+<pre><code class="language-bash">error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+</code></pre>
+
+<p>再继续安装包：</p>
+
+<pre><code class="language-bash">$ yum install libstdc++.so.6
+</code></pre>
+
+<h1 id="二-zip-unzip-安装使用">二、zip/unzip 安装使用</h1>
+
+<h2 id="2-1-检查是否有包含-zip-unzip-的软件包">2.1 检查是否有包含 zip（unzip） 的软件包</h2>
+
+<pre><code class="language-bash">$ yum provides zip
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.cqu.edu.cn
+ * extras: mirrors.cqu.edu.cn
+ * updates: mirrors.tuna.tsinghua.edu.cn
+zip-3.0-11.el7.x86_64 : A file compression and packaging utility compatible with PKZIP
+Repo        : base
+
+
+
+zip-3.0-11.el7.x86_64 : A file compression and packaging utility compatible with PKZIP
+Repo        : @base
+</code></pre>
+
+<h2 id="2-2-安装-zip-unzip">2.2 安装 zip、unzip</h2>
+
+<pre><code class="language-bash">$ yum install zip
+$ yum install unzip
+</code></pre>
+
+<h2 id="2-3-常用命令">2.3 常用命令</h2>
+
+<pre><code class="language-bash">$ zip -r myfile.zip ./*
+# 将当前目录下的所有文件和文件夹全部压缩成 myfile.zip 文件，-r 表示递归压缩子目录下所有文件.
+
+$ unzip -o -d /home/sunny myfile.zip
+# 把 myfile.zip 文件解压到 /home/sunny/
+# -o ：不提示的情况下覆盖文件
+# -d：将文件解压缩到指定目录下
+
+$ zip -d myfile.zip smart.txt
+# 删除压缩文件中 smart.txt 文件
+
+$ zip -m myfile.zip ./rpm_info.txt
+# 向压缩文件中 myfile.zip 中添加 rpm_info.txt 文件
+</code></pre>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2016/12/22/centos-%E5%AE%89%E8%A3%85-rarzip-%E8%A7%A3%E5%8E%8B%E7%BC%A9/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/rar/">rar</a>
+          
+          <a href="/tags/zip/">zip</a>
+          
+          <a href="/tags/centos/">CentOS</a>
+          
+          <a href="/tags/linux/">Linux</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2016/12/23/centos-%E5%AE%89%E8%A3%85-nginx/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">CentOS 安装 Nginx</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2016/12/02/vim-tab-%E8%AE%BE%E7%BD%AE%E4%B8%BA-4-%E4%B8%AA%E7%A9%BA%E6%A0%BC/">
+            <span class="next-text nav-default">Vim Tab 设置为 4 个空格</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '861e30bd7da246229e5830357a11ce60',
+        title: 'CentOS 安装 rar、zip 解压缩',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用 PowerMock 进行单元测试 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" 单元测试（Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。如果我们写的代码依赖于某些模块对象，而单元测试过程中这些对象又很难手动创建，或者模块还没有开发完成，那么就使用一个虚拟的对象来完成单元测试，这就是所谓的 Mock。
+ Java 单元测试中比较流行的 Mock 测试框架有 jMock、EasyMock、Mockito，但是这些 Mock 工具都不能 Mock static、final、private 方法等，而 PowerMock 能够做到。
+使用 PowerMock，首先需要使用 @RunWith(PowerMockRunner.class) 将测试用例的 Runner 改为 PowerMockRunner。如果要 Mock static、final、private 等方法的时候，就需要加注解 @PrepareForTest。
+PowerMock 有两个版本，一个是基于 EasyMock 实现的，另一个是基于 Mockito 实现的。
+下面我将以 PowerMock 的 Mockito 的版本来讲述如何使用 PowerMock。
+" />
+<meta name="keywords" content="Java,, Mock,, Mockito,, PowerMock" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2017/07/25/use-introduction-of-powermock/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="使用 PowerMock 进行单元测试" />
+<meta property="og:description" content="
+单元测试（Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。如果我们写的代码依赖于某些模块对象，而单元测试过程中这些对象又很难手动创建，或者模块还没有开发完成，那么就使用一个虚拟的对象来完成单元测试，这就是所谓的 Mock。
+
+
+Java 单元测试中比较流行的 Mock 测试框架有 jMock、EasyMock、Mockito，但是这些 Mock 工具都不能 Mock static、final、private 方法等，而 PowerMock 能够做到。
+
+使用 PowerMock，首先需要使用 @RunWith(PowerMockRunner.class) 将测试用例的 Runner 改为 PowerMockRunner。如果要 Mock static、final、private 等方法的时候，就需要加注解 @PrepareForTest。
+
+PowerMock 有两个版本，一个是基于 EasyMock 实现的，另一个是基于 Mockito 实现的。
+
+下面我将以 PowerMock 的 Mockito 的版本来讲述如何使用 PowerMock。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2017/07/25/use-introduction-of-powermock/" /><meta property="article:published_time" content="2017-07-25T19:01:14&#43;00:00"/>
+<meta property="article:modified_time" content="2017-07-25T19:01:14&#43;00:00"/>
+
+<meta itemprop="name" content="使用 PowerMock 进行单元测试">
+<meta itemprop="description" content="
+单元测试（Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。如果我们写的代码依赖于某些模块对象，而单元测试过程中这些对象又很难手动创建，或者模块还没有开发完成，那么就使用一个虚拟的对象来完成单元测试，这就是所谓的 Mock。
+
+
+Java 单元测试中比较流行的 Mock 测试框架有 jMock、EasyMock、Mockito，但是这些 Mock 工具都不能 Mock static、final、private 方法等，而 PowerMock 能够做到。
+
+使用 PowerMock，首先需要使用 @RunWith(PowerMockRunner.class) 将测试用例的 Runner 改为 PowerMockRunner。如果要 Mock static、final、private 等方法的时候，就需要加注解 @PrepareForTest。
+
+PowerMock 有两个版本，一个是基于 EasyMock 实现的，另一个是基于 Mockito 实现的。
+
+下面我将以 PowerMock 的 Mockito 的版本来讲述如何使用 PowerMock。">
+
+
+<meta itemprop="datePublished" content="2017-07-25T19:01:14&#43;00:00" />
+<meta itemprop="dateModified" content="2017-07-25T19:01:14&#43;00:00" />
+<meta itemprop="wordCount" content="1693">
+
+
+
+<meta itemprop="keywords" content="Java,Mock,Mockito,PowerMock," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用 PowerMock 进行单元测试"/>
+<meta name="twitter:description" content="
+单元测试（Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。如果我们写的代码依赖于某些模块对象，而单元测试过程中这些对象又很难手动创建，或者模块还没有开发完成，那么就使用一个虚拟的对象来完成单元测试，这就是所谓的 Mock。
+
+
+Java 单元测试中比较流行的 Mock 测试框架有 jMock、EasyMock、Mockito，但是这些 Mock 工具都不能 Mock static、final、private 方法等，而 PowerMock 能够做到。
+
+使用 PowerMock，首先需要使用 @RunWith(PowerMockRunner.class) 将测试用例的 Runner 改为 PowerMockRunner。如果要 Mock static、final、private 等方法的时候，就需要加注解 @PrepareForTest。
+
+PowerMock 有两个版本，一个是基于 EasyMock 实现的，另一个是基于 Mockito 实现的。
+
+下面我将以 PowerMock 的 Mockito 的版本来讲述如何使用 PowerMock。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">使用 PowerMock 进行单元测试</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2017-07-25 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/"> Java开发技术 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1693 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 4 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#1-普通-mock-mock-参数传递的对象">1. 普通 Mock（Mock 参数传递的对象）</a></li>
+<li><a href="#2-mock-方法内部-new-出来的对象">2. Mock 方法内部 new 出来的对象</a></li>
+<li><a href="#3-mock-普通对象的-final-方法">3. Mock 普通对象的 final 方法</a></li>
+<li><a href="#4-mock-静态方法">4. Mock 静态方法。</a></li>
+<li><a href="#5-mock-私有方法">5. Mock 私有方法</a></li>
+<li><a href="#6-mock-jdk-中类的静态-私有方法">6. Mock JDK 中类的静态、私有方法。</a></li>
+<li><a href="#7-mock-依赖类中的方法-whennew">7. Mock 依赖类中的方法（whenNew）</a></li>
+<li><a href="#8-完整示例代码">8. 完整示例代码</a>
+<ul>
+<li><a href="#测试目标类">测试目标类</a></li>
+<li><a href="#依赖类">依赖类</a></li>
+<li><a href="#测试用例">测试用例</a></li>
+</ul></li>
+<li><a href="#9-mock-与-spy">9. Mock 与 Spy</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p>单元测试（Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。如果我们写的代码依赖于某些模块对象，而单元测试过程中这些对象又很难手动创建，或者模块还没有开发完成，那么就使用一个虚拟的对象来完成单元测试，这就是所谓的 Mock。</p>
+</blockquote>
+
+<p>Java 单元测试中比较流行的 Mock 测试框架有 <a href="http://www.jmock.org/">jMock</a>、<a href="http://easymock.org/">EasyMock</a>、<a href="https://github.com/mockito/mockito">Mockito</a>，但是这些 Mock 工具都不能 Mock <code>static</code>、<code>final</code>、<code>private</code> 方法等，而 <a href="https://github.com/powermock/powermock">PowerMock</a> 能够做到。</p>
+
+<p>使用 PowerMock，首先需要使用 <code>@RunWith(PowerMockRunner.class)</code> 将测试用例的 Runner 改为 <code>PowerMockRunner</code>。如果要 Mock <code>static</code>、<code>final</code>、<code>private</code> 等方法的时候，就需要加注解 <code>@PrepareForTest</code>。</p>
+
+<p>PowerMock 有两个版本，一个是基于 EasyMock 实现的，另一个是基于 Mockito 实现的。</p>
+
+<p>下面我将以 PowerMock 的 Mockito 的版本来讲述如何使用 PowerMock。</p>
+
+<h2 id="1-普通-mock-mock-参数传递的对象">1. 普通 Mock（Mock 参数传递的对象）</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+    public boolean callArgumentInstance(File file) {
+        return file.exists();
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">public class TestClassUnderTest {
+    @Test
+    public void testCallArgumentInstance() {
+        // Mock 对象，也可以使用 org.mockito.Mock 注解标记来实现
+        File file = PowerMockito.mock(File.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        // 录制 Mock 对象行为
+        PowerMockito.when(file.exists()).thenReturn(true);
+
+        // 验证方法行为
+        Assert.assertTrue(underTest.callArgumentInstance(file));
+    }
+}
+</code></pre>
+
+<p>普通 Mock 不需要加 <code>@RunWith</code> 和 <code>@PrepareForTest</code> 注解。</p>
+
+<h2 id="2-mock-方法内部-new-出来的对象">2. Mock 方法内部 new 出来的对象</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+    public boolean callInternalInstance(String path) {
+       File file = new File(path);
+       return file.exists();
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+    // 在测试方法之上需要添加注解 @PrepareForTest，注解里写的类是需要 Mock 的 new 对象代码所在的类。
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallInternalInstance() throws Exception {
+        File file = PowerMockito.mock(File.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        // 当以参数为 bbb 创建 File 对象的时候，返回已经 Mock 的 File 对象。
+        PowerMockito.whenNew(File.class).withArguments(&quot;bbb&quot;).thenReturn(file);
+        PowerMockito.when(file.exists()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callInternalInstance(&quot;bbb&quot;));
+    }
+}
+</code></pre>
+
+<h2 id="3-mock-普通对象的-final-方法">3. Mock 普通对象的 final 方法</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+    public boolean callFinalMethod(ClassDependency refer) {
+        return refer.isAlive();
+    }
+}
+</code></pre>
+
+<pre><code class="language-java">public class ClassDependency {
+    public final boolean isAlive() {
+        // do something
+        return false;
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+    // 在测试方法之上加注解 @PrepareForTest，注解里写的类是需要 Mock 的 final 方法所在的类。
+    @PrepareForTest(ClassDependency.class)
+    public void testCallFinalMethod() {
+        ClassDependency depencency = PowerMockito.mock(ClassDependency.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.when(depencency.isAlive()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callFinalMethod(depencency));
+    }
+}
+</code></pre>
+
+<h2 id="4-mock-静态方法">4. Mock 静态方法。</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+    public boolean callStaticMethod() {
+        return ClassDependency.isExist();
+    }
+}
+</code></pre>
+
+<pre><code class="language-java">public class ClassDependency {
+    public static boolean isExist() {
+        // do something
+        return false;
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+    // 在测试方法之上加注解 @PrepareForTest，注解里写的类是需要 Mock 的 static 方法所在的类。
+    @PrepareForTest(ClassDependency.class)
+    public void testCallStaticMethod() {
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        // 表示需要 Mock 这个类里的静态方法
+        PowerMockito.mockStatic(ClassDependency.class);
+        PowerMockito.when(ClassDependency.isExist()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callStaticMethod());
+    }
+}
+</code></pre>
+
+<h2 id="5-mock-私有方法">5. Mock 私有方法</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+
+    public boolean callPrivateMethod() {
+        return isExist();
+    }
+
+    private boolean isExist() {
+        return false;
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+    // 在测试方法之上加注解 @PrepareForTest，注解里写的类是需要 Mock 的 private 方法所在的类。
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallPrivateMethod() throws Exception {
+        ClassUnderTest underTest = PowerMockito.mock(ClassUnderTest.class);
+
+        PowerMockito.when(underTest.callPrivateMethod()).thenCallRealMethod();
+        PowerMockito.when(underTest, &quot;isExist&quot;).thenReturn(true);
+
+        Assert.assertTrue(underTest.callPrivateMethod());
+    }
+}
+</code></pre>
+
+<h2 id="6-mock-jdk-中类的静态-私有方法">6. Mock JDK 中类的静态、私有方法。</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+
+    public boolean callSystemFinalMethod(String str) {
+        return str.isEmpty();
+    }
+
+    public String callSystemStaticMethod(String str) {
+        return System.getProperty(str);
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest
+    @Test
+    // 和 Mock 普通对象的 static、final 方法一样，只不过注解 @PrepareForTest 里写的类不一样
+  	// 注解里写的类是需要调用系统方法所在的类。
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallSystemFinalMethod() {
+        String str = PowerMockito.mock(String.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.when(str.isEmpty()).thenReturn(false);
+
+        Assert.assertFalse(underTest.callSystemFinalMethod(str));
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallSystemStaticMethod() {
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.mockStatic(System.class);
+        PowerMockito.when(System.getProperty(&quot;aaa&quot;)).thenReturn(&quot;bbb&quot;);
+
+        Assert.assertEquals(&quot;bbb&quot;, underTest.callSystemStaticMethod(&quot;aaa&quot;));
+    }
+}
+</code></pre>
+
+<h2 id="7-mock-依赖类中的方法-whennew">7. Mock 依赖类中的方法（whenNew）</h2>
+
+<p>测试对象</p>
+
+<pre><code class="language-java">public class ClassUnderTest {
+
+    public boolean callDependency() {
+        ClassDependency classDependency = new ClassDependency();
+        return classDependency.isGod(&quot;hh&quot;);
+    }
+}
+</code></pre>
+
+<pre><code class="language-java">public class ClassDependency {
+    public boolean isGod(String oh){
+        System.out.println(oh);
+        return false;
+    }
+}
+</code></pre>
+
+<p>测试用例</p>
+
+<pre><code class="language-java">// 必须加注解 @PrepareForTest 和 @RunWith
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+  	// 注解里写的类是依赖类所在的类。
+    @PrepareForTest(ClassUnderTest.class)
+    public void testDependency() throws Exception {
+        ClassUnderTest underTest = new ClassUnderTest();
+        ClassDependency dependency = mock(ClassDependency.class);
+
+        whenNew(ClassDependency.class).withAnyArguments().thenReturn(dependency);
+
+        when(dependency.isGod(anyString())).thenReturn(true);
+        Assert.assertTrue(underTest.callDependency());
+    }
+}
+</code></pre>
+
+<h2 id="8-完整示例代码">8. 完整示例代码</h2>
+
+<h3 id="测试目标类">测试目标类</h3>
+
+<pre><code class="language-java">package cn.enncloud.ceres.powermock;
+
+import java.io.File;
+
+/**
+ * Created by lixiangrong on 2017/7/21.
+ */
+public class ClassUnderTest {
+
+    public boolean callArgumentInstance(File file) {
+        return file.exists();
+    }
+
+    public boolean callInternalInstance(String path) {
+        File file = new File(path);
+        return file.exists();
+    }
+
+    public boolean callFinalMethod(ClassDependency refer) {
+        return refer.isAlive();
+    }
+
+    public boolean callSystemFinalMethod(String str) {
+        return str.isEmpty();
+    }
+
+    public boolean callStaticMethod() {
+        return ClassDependency.isExist();
+    }
+
+    public String callSystemStaticMethod(String str) {
+        return System.getProperty(str);
+    }
+
+    public boolean callPrivateMethod() {
+        return isExist();
+    }
+
+    public boolean callVoidPrivateMethod(){
+        testVoid();
+        return true;
+    }
+
+    private boolean isExist() {
+        // do something
+        return false;
+    }
+
+    private void testVoid(){
+        System.out.println(&quot;do nothing&quot;);
+    }
+
+    public boolean callDependency() {
+        ClassDependency classDependency = new ClassDependency();
+        return classDependency.isGod(&quot;hh&quot;);
+    }
+}
+</code></pre>
+
+<h3 id="依赖类">依赖类</h3>
+
+<pre><code class="language-java">package cn.enncloud.ceres.powermock;
+
+/**
+ * Created by lixiangrong on 2017/7/21.
+ */
+public class ClassDependency {
+
+    public static boolean isExist() {
+        // do something
+        return false;
+    }
+
+    public final boolean isAlive() {
+        // do something
+        return false;
+    }
+
+    public boolean isGod(String oh){
+        System.out.println(oh);
+        return false;
+    }
+}
+</code></pre>
+
+<h3 id="测试用例">测试用例</h3>
+
+<pre><code class="language-java">package cn.enncloud.ceres.powermock.test;
+
+import cn.enncloud.ceres.powermock.ClassDependency;
+import cn.enncloud.ceres.powermock.ClassUnderTest;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.io.File;
+
+/**
+ * Created by lixiangrong on 2017/7/21.
+ */
+@RunWith(PowerMockRunner.class)
+public class TestClassUnderTest {
+    @Test
+    public void testCallArgumentInstance() {
+        File file = PowerMockito.mock(File.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.when(file.exists()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callArgumentInstance(file));
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallInternalInstance() throws Exception {
+        File file = PowerMockito.mock(File.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.whenNew(File.class).withArguments(&quot;bbb&quot;).thenReturn(file);
+        PowerMockito.when(file.exists()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callInternalInstance(&quot;bbb&quot;));
+    }
+
+    @Test
+    @PrepareForTest(ClassDependency.class)
+    public void testCallFinalMethod() {
+        ClassDependency depencency = PowerMockito.mock(ClassDependency.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.when(depencency.isAlive()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callFinalMethod(depencency));
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallSystemFinalMethod() {
+        String str = PowerMockito.mock(String.class);
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.when(str.isEmpty()).thenReturn(false);
+
+        Assert.assertFalse(underTest.callSystemFinalMethod(str));
+    }
+
+    @Test
+    @PrepareForTest(ClassDependency.class)
+    public void testCallStaticMethod() {
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.mockStatic(ClassDependency.class);
+        PowerMockito.when(ClassDependency.isExist()).thenReturn(true);
+
+        Assert.assertTrue(underTest.callStaticMethod());
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallSystemStaticMethod() {
+        ClassUnderTest underTest = new ClassUnderTest();
+
+        PowerMockito.mockStatic(System.class);
+        PowerMockito.when(System.getProperty(&quot;aaa&quot;)).thenReturn(&quot;bbb&quot;);
+
+        Assert.assertEquals(&quot;bbb&quot;, underTest.callSystemStaticMethod(&quot;aaa&quot;));
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallPrivateMethod() throws Exception {
+        ClassUnderTest underTest = PowerMockito.mock(ClassUnderTest.class);
+
+        PowerMockito.when(underTest.callPrivateMethod()).thenCallRealMethod();
+        PowerMockito.when(underTest, &quot;isExist&quot;).thenReturn(true);
+
+        Assert.assertTrue(underTest.callPrivateMethod());
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testCallVoidPrivateMethod() throws Exception {
+        ClassUnderTest underTest = PowerMockito.mock(ClassUnderTest.class);
+
+        PowerMockito.when(underTest.callVoidPrivateMethod()).thenCallRealMethod();
+        PowerMockito.doNothing().when(underTest, &quot;testVoid&quot;);
+
+        Assert.assertTrue(underTest.callVoidPrivateMethod());
+    }
+
+    @Test
+    @PrepareForTest(ClassUnderTest.class)
+    public void testDependency() throws Exception {
+        ClassUnderTest underTest = new ClassUnderTest();
+        ClassDependency dependency = mock(ClassDependency.class);
+
+        // @PrepareForTest(ClassUnderTest.class)
+        whenNew(ClassDependency.class).withAnyArguments().thenReturn(dependency);
+
+        when(dependency.isGod(anyString())).thenReturn(true);
+        Assert.assertTrue(underTest.callDependency());
+    }
+}
+</code></pre>
+
+<h2 id="9-mock-与-spy">9. Mock 与 Spy</h2>
+
+<p>Mock 不是真实的对象，它只是用类型的 class 创建了一个虚拟对象，并可以设置对象行为
+Spy 是一个真实的对象，但它可以设置对象行为</p>
+
+<hr />
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2017/07/25/use-introduction-of-powermock/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/java/">Java</a>
+          
+          <a href="/tags/mock/">Mock</a>
+          
+          <a href="/tags/mockito/">Mockito</a>
+          
+          <a href="/tags/powermock/">PowerMock</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2017/08/24/golang-cheat-sheet/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[转] Go Cheat Sheet</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2017/07/22/from-java-to-golang/">
+            <span class="next-text nav-default">[转] Java 程序员的 Golang 入门笔记</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '636d305888c25937c642e84134bdd49d',
+        title: '使用 PowerMock 进行单元测试',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

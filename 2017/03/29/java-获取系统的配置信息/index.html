@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java 获取系统的配置信息 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="System.getProperty() 可以获取系统的配置信息，最近项目开发中要用到临时文件，所以想到了使用系统临时文件目录，最后得知可以通过 System.getProperty(&amp;quot;java.io.tmpdir&amp;quot;) 可以获取不同操作系统平台下的临时目录。比如：
+在 windows 中的目录是：C:\Users\登录用户~1\AppData\Local\Temp\
+在 linux 下的目录是：/tmp
+在 Mac 下目录是 /var/folders/c8/2c9rf0ss2w9c8tdtfcgvg9kh0000gn/T/ （我感觉是不同电脑应该不一样）
+" />
+<meta name="keywords" content="Java,getProperty" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2017/03/29/java-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Java 获取系统的配置信息" />
+<meta property="og:description" content="System.getProperty() 可以获取系统的配置信息，最近项目开发中要用到临时文件，所以想到了使用系统临时文件目录，最后得知可以通过 System.getProperty(&quot;java.io.tmpdir&quot;) 可以获取不同操作系统平台下的临时目录。比如：
+
+在 windows 中的目录是：C:\Users\登录用户~1\AppData\Local\Temp\
+
+在 linux 下的目录是：/tmp
+
+在 Mac 下目录是 /var/folders/c8/2c9rf0ss2w9c8tdtfcgvg9kh0000gn/T/ （我感觉是不同电脑应该不一样）" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2017/03/29/java-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF/" /><meta property="article:published_time" content="2017-03-29T15:33:54&#43;00:00"/>
+<meta property="article:modified_time" content="2017-03-29T15:33:54&#43;00:00"/>
+
+<meta itemprop="name" content="Java 获取系统的配置信息">
+<meta itemprop="description" content="System.getProperty() 可以获取系统的配置信息，最近项目开发中要用到临时文件，所以想到了使用系统临时文件目录，最后得知可以通过 System.getProperty(&quot;java.io.tmpdir&quot;) 可以获取不同操作系统平台下的临时目录。比如：
+
+在 windows 中的目录是：C:\Users\登录用户~1\AppData\Local\Temp\
+
+在 linux 下的目录是：/tmp
+
+在 Mac 下目录是 /var/folders/c8/2c9rf0ss2w9c8tdtfcgvg9kh0000gn/T/ （我感觉是不同电脑应该不一样）">
+
+
+<meta itemprop="datePublished" content="2017-03-29T15:33:54&#43;00:00" />
+<meta itemprop="dateModified" content="2017-03-29T15:33:54&#43;00:00" />
+<meta itemprop="wordCount" content="527">
+
+
+
+<meta itemprop="keywords" content="Java," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java 获取系统的配置信息"/>
+<meta name="twitter:description" content="System.getProperty() 可以获取系统的配置信息，最近项目开发中要用到临时文件，所以想到了使用系统临时文件目录，最后得知可以通过 System.getProperty(&quot;java.io.tmpdir&quot;) 可以获取不同操作系统平台下的临时目录。比如：
+
+在 windows 中的目录是：C:\Users\登录用户~1\AppData\Local\Temp\
+
+在 linux 下的目录是：/tmp
+
+在 Mac 下目录是 /var/folders/c8/2c9rf0ss2w9c8tdtfcgvg9kh0000gn/T/ （我感觉是不同电脑应该不一样）"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Java 获取系统的配置信息</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-29 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/"> Java开发技术 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 527 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 2 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p><code>System.getProperty()</code> 可以获取系统的配置信息，最近项目开发中要用到临时文件，所以想到了使用系统临时文件目录，最后得知可以通过 <code>System.getProperty(&quot;java.io.tmpdir&quot;)</code> 可以获取不同操作系统平台下的临时目录。比如：</p>
+
+<p>在 <code>windows</code> 中的目录是：<code>C:\Users\登录用户~1\AppData\Local\Temp\</code></p>
+
+<p>在 <code>linux</code> 下的目录是：<code>/tmp</code></p>
+
+<p>在 <code>Mac</code> 下目录是 <code>/var/folders/c8/2c9rf0ss2w9c8tdtfcgvg9kh0000gn/T/</code> （我感觉是不同电脑应该不一样）</p>
+
+<p>借此机会总结一下 <code>System.getProperty()</code> 可以获取那些系统信息:</p>
+
+<pre><code class="language-java">java.version    // Java运行时环境版本
+java.vendor // Java运行时环境供应商
+java.vendor.url // Java供应商的 URL
+java.home   // Java安装目录
+java.vm.specification.version   // Java虚拟机规范版本
+java.vm.specification.vendor    // Java虚拟机规范供应商
+java.vm.specification.name  // Java虚拟机规范名称
+java.vm.version // Java虚拟机实现版本
+java.vm.vendor  // Java虚拟机实现供应商
+java.vm.name    // Java虚拟机实现名称
+java.specification.version  // Java运行时环境规范版本
+java.specification.vendor   // Java运行时环境规范供应商
+java.specification.name // Java运行时环境规范名称
+java.class.version  // Java类格式版本号
+java.class.path // Java类路径
+java.library.path   // 加载库时搜索的路径列表
+java.io.tmpdir  // 默认的临时文件路径
+java.compiler   // 要使用的 JIT 编译器的名称
+java.ext.dirs   // 一个或多个扩展目录的路径
+os.name // 操作系统的名称
+os.arch // 操作系统的架构
+os.version  // 操作系统的版本
+file.separator  // 文件分隔符（在 UNIX 系统中是“/”）
+path.separator  // 路径分隔符（在 UNIX 系统中是“:”）
+line.separator  // 行分隔符（在 UNIX 系统中是“/n”）
+user.name   // 用户的账户名称
+user.home   // 用户的主目录
+user.dir    // 用户的当前工作目录
+</code></pre>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2017/03/29/java-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/java/">Java</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2017/04/09/poker-%E6%9C%BA%E6%A2%B0%E9%94%AE%E7%9B%98%E5%85%A5%E6%89%8B%E8%AE%B0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Poker 机械键盘入手记</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2017/02/21/mac-%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/">
+            <span class="next-text nav-default">Mac 使用技巧总结</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: 'd6c5cf92f54d0c949e237ad8fcdbdc1f',
+        title: 'Java 获取系统的配置信息',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>JVM 运行时数据区域 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="Java 的内存区域划分绝不仅仅只是堆内存（heap）和栈内存（Stack），实际上 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为以下几个数据区域：程序计数器、Java 虚拟机栈、本地方法栈、堆、方法区、运行时常量和直接内存。如下图所示：
+" />
+<meta name="keywords" content="JVM,Java" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2018/04/08/jvm-runtime-data-area/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="JVM 运行时数据区域" />
+<meta property="og:description" content="Java 的内存区域划分绝不仅仅只是堆内存（heap）和栈内存（Stack），实际上 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为以下几个数据区域：程序计数器、Java 虚拟机栈、本地方法栈、堆、方法区、运行时常量和直接内存。如下图所示：
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2018/04/08/jvm-runtime-data-area/" /><meta property="article:published_time" content="2018-04-08T17:30:33&#43;00:00"/>
+<meta property="article:modified_time" content="2018-04-08T17:30:33&#43;00:00"/>
+
+<meta itemprop="name" content="JVM 运行时数据区域">
+<meta itemprop="description" content="Java 的内存区域划分绝不仅仅只是堆内存（heap）和栈内存（Stack），实际上 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为以下几个数据区域：程序计数器、Java 虚拟机栈、本地方法栈、堆、方法区、运行时常量和直接内存。如下图所示：
+
+">
+
+
+<meta itemprop="datePublished" content="2018-04-08T17:30:33&#43;00:00" />
+<meta itemprop="dateModified" content="2018-04-08T17:30:33&#43;00:00" />
+<meta itemprop="wordCount" content="2874">
+
+
+
+<meta itemprop="keywords" content="JVM,Java," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM 运行时数据区域"/>
+<meta name="twitter:description" content="Java 的内存区域划分绝不仅仅只是堆内存（heap）和栈内存（Stack），实际上 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为以下几个数据区域：程序计数器、Java 虚拟机栈、本地方法栈、堆、方法区、运行时常量和直接内存。如下图所示：
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">JVM 运行时数据区域</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-08 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/"> Java开发技术 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 2874 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 6 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-程序计数器-pc-register">一、程序计数器（PC Register）</a></li>
+<li><a href="#二-java-虚拟机栈-jvm-stacks">二、Java 虚拟机栈（JVM Stacks）</a></li>
+<li><a href="#三-本地方法栈-native-method-stacks">三、本地方法栈（Native Method Stacks）</a></li>
+<li><a href="#四-堆-heap">四、堆（Heap）</a>
+<ul>
+<li><a href="#4-1-新生代">4.1 新生代</a></li>
+<li><a href="#4-2-老年代">4.2 老年代</a></li>
+<li><a href="#4-3-永久代">4.3 永久代</a></li>
+</ul></li>
+<li><a href="#五-方法区-method-area">五、方法区（Method Area）</a></li>
+<li><a href="#六-运行时常量池-runtime-constant-pool">六、运行时常量池（Runtime Constant Pool）</a></li>
+<li><a href="#七-直接内存-direct-memory">七、直接内存（Direct Memory）</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p>Java 的内存区域划分绝不仅仅只是堆内存（heap）和栈内存（Stack），实际上 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为以下几个数据区域：程序计数器、Java 虚拟机栈、本地方法栈、堆、方法区、运行时常量和直接内存。如下图所示：</p>
+
+<p><img src="https://wx3.sinaimg.cn/large/687148dbly1fq7bi09iazj21gf0ve0vv.jpg" alt="Runtime DataArea" /></p>
+
+<h2 id="一-程序计数器-pc-register">一、程序计数器（PC Register）</h2>
+
+<p>程序计数器（PC Register）是最小的一块内存区域，它的作用是记录正在执行的虚拟机字节码指令的地址。在虚拟机的模型里，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、异常处理、线程恢复等基础功能都需要依赖计数器完成。</p>
+
+<ul>
+<li>每一个 Java 线程都有一个程序计数器，用以记录比如在线程切换回来后恢复到正确的执行位置。</li>
+<li>如该线程正在执行一个 Java 方法，则计数器记录的是正在执行的虚拟机字节码地址，如执行 Native 方法，则计数器值为空。</li>
+<li>此内存区域是唯一一个在 JVM 中没有规定任何 <code>OutOfMemoryError</code> 情况的区域。</li>
+</ul>
+
+<h2 id="二-java-虚拟机栈-jvm-stacks">二、Java 虚拟机栈（JVM Stacks）</h2>
+
+<p>每个 Java 方法在执行的同时会创建一个 &ldquo;栈帧&rdquo; 用于存储局部变量表（包括参数）、操作数栈（执行引擎计算时需要）、常量池引用、方法出口等信息。每一个方法从调用直至执行完成的过程，就对应着一个栈帧在 Java 虚拟机栈中入栈和出栈的过程。JVM 栈是线程私有的，并且生命周期与线程相同。并且当线程运行完毕后，相应内存也就被自动回收</p>
+
+<p><code>局部变量表</code> 存放了编译器可知的各种基本数据类型（boolean、byte、char、short、int、float、long、double）、对象引用（引用指针，并非对象本身），其中 64 位长度的 long 和 double 类型的数据会占用 2 个局部变量的空间，其余数据类型只占 1 个。</p>
+
+<p>局部变量表所需的内存空间在编译期间完成分配，当进入一个方法时，这个方法需要在栈帧中分配多大的局部变量是完全确定的，在运行期间栈帧不会改变局部变量表的大小空间。</p>
+
+<p>可以通过虚拟机参数 <code>-Xss</code>（例如：<code>java -Xss=512M HackTheJava</code>）来指定一个程序的 Java 虚拟机栈内存大小。</p>
+
+<p>当线程请求的栈深度大于虚拟机所允许的深度，会抛出 <code>StackOverflowError</code> 异常（如：将一个函数反复递归自己，最终会出现这种异常）；如果 JVM 栈可以动态扩展（大部分 JVM 是可以的），当扩展时无法申请到足够内存，则会抛出 <code>OutOfMemoryError</code> 异常。</p>
+
+<h2 id="三-本地方法栈-native-method-stacks">三、本地方法栈（Native Method Stacks）</h2>
+
+<p>本地方法不是用 Java 实现，对待这些方法需要特别处理。与 Java 虚拟机栈类似，它们之间的区别只不过是本地方法栈为本地方法服务。和 JVM 栈一样，这个区域也会抛出 <code>StackOverflowError</code> 和 <code>OutOfMemoryError</code> 异常。</p>
+
+<h2 id="四-堆-heap">四、堆（Heap）</h2>
+
+<p>堆（Heap）也叫做 Java 堆，GC 堆，是 Java 虚拟机所管理的内存中最大的一块内存区域，也是被各个线程共享的内存区域，在 JVM 启动时创建。该内存区域存放了对象实例 (所有 new 的对象)及数组，JIT 编译器貌似不是这样的。根据 Java 虚拟机规范的规定，Java 堆可以处于物理上不连续的内存空间中，只要逻辑上是连续的即可。</p>
+
+<p>其大小通过 <code>- Xms</code>（最小值）和 <code>-Xmx</code>（最大值）参数设置（例如：<code>java -Xms=1M -Xmx=2M HackTheJava</code>），<code>-Xms</code> 为 JVM 启动时申请的最小内存，默认为操作系统物理内存的 <sup>1</sup>&frasl;<sub>64</sub> 但小于 1G，<code>-Xmx</code> 为 JVM 可申请的最大内存，默认为物理内存的 <sup>1</sup>&frasl;<sub>4</sub> 但小于 1G，默认当空余堆内存小于 40% 时，JVM 会增大 Heap 到 <code>-Xmx</code> 指定的大小，可通过 <code>- XX:MinHeapFreeRation</code> 来指定这个比列；当空余堆内存大于 70% 时，JVM 会减小 heap 的大小到 <code>-Xms</code> 指定的大小，可通过 <code>XX:MaxHeapFreeRation</code> 来指定这个比列，对于运行系统，为避免在运行时频繁调整 Heap 的大小，通常 <code>-Xms</code> 与 <code>-Xmx</code> 的值设成一样。</p>
+
+<p>如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出 <code>OutOfMemoryError</code> 异常。</p>
+
+<p>Java 堆是垃圾收集管理的主要战场，现代的垃圾收集器基本都是采用分代收集算法，该算法的思想是针对不同的对象采取不同的垃圾回收算法，因此虚拟机把 Java 堆分成以下三块：新生代（Young Generation）、老年代（Old Generation）、永久代（Permanent Generation）。</p>
+
+<h3 id="4-1-新生代">4.1 新生代</h3>
+
+<p>程序新创建的对象都是从新生代分配内存，新生代存放着大量的生命很短的对象，因此新生代在三个区域中垃圾回收的频率最高。为了更高效地进行垃圾回收，把新生代继续划分成以下三个空间：Eden、From Survivor、To Survivor。</p>
+
+<p>可通过 <code>- Xmn</code> 参数来指定新生代的大小，也可以通过 <code>- XX:SurvivorRation</code> 来调整 Eden Space 及 Survivor Space 的大小。</p>
+
+<h3 id="4-2-老年代">4.2 老年代</h3>
+
+<p>老年代用于存放经过多次新生代 GC 任然存活的对象，例如缓存对象。新建的对象也有可能直接进入老年代，主要有两种情况：</p>
+
+<ul>
+<li>大对象，可通过启动参数设置 <code>- XX:PretenureSizeThreshold=1024</code>（单位为字节，默认为 0）来代表超过多大时就不在新生代分配，而是直接在老年代分配。</li>
+<li>大的数组对象，且数组中无引用外部对象。</li>
+</ul>
+
+<p>老年代所占的内存大小为 <code>- Xmx</code> 对应的值减去 <code>- Xmn</code> 对应的值。</p>
+
+<h3 id="4-3-永久代">4.3 永久代</h3>
+
+<p>永久代是 Hotspot 虚拟机特有的概念，是方法区的一种实现，别的 JVM 都没有这个东西。在 Java 8 中，永久代被彻底移除，取而代之的是另一块与堆不相连的本地内存——元空间。
+永久代或者 &ldquo;Perm Gen&rdquo; 包含了 JVM 需要的应用元数据，这些元数据描述了在应用里使用的类和方法。注意，永久代不是 Java 堆内存的一部分。永久代存放 JVM 运行时使用的类。永久代同样包含了 Java SE 库的类和方法。永久代的对象在 Full GC 时进行垃圾收集。</p>
+
+<p><img src="https://wx1.sinaimg.cn/large/687148dbly1fq5ei22xlnj212u0petbs.jpg" alt="image" /></p>
+
+<h2 id="五-方法区-method-area">五、方法区（Method Area）</h2>
+
+<p>方法区（Method Area）也称 &ldquo;永久代&rdquo;、&rdquo;非堆&rdquo;，它用于存储虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，如：当程序中通过 getName、isInterface 等方法来获取信息时，这些数据来源于方法区。方法区是各个线程共享的内存区域，比如每个线程都可以访问同一个类的静态变量。默认最小值为 16MB，最大值为 64MB，可以通过 - XX:PermSize 和 -XX:MaxPermSize 参数限制方法区的大小。</p>
+
+<p>和 Java 堆一样不需要连续的内存，并且可以动态扩展，动态扩展失败一样会抛出 <code>OutOfMemoryError</code> 异常。</p>
+
+<p>由于使用反射机制的原因，虚拟机很难推测哪个类信息不再使用，因此这块区域的回收很难，对这块区域进行垃圾回收的主要目标是对常量池的回收和对类的卸载。方法区并不等同于永久代，只是因为 HotSpot VM 使用永久代来实现方法区，对于其他的 Java 虚拟机，比如 J9 和 JRockit 等，并不存在永久代概念。</p>
+
+<h2 id="六-运行时常量池-runtime-constant-pool">六、运行时常量池（Runtime Constant Pool）</h2>
+
+<p>运行时常量池（Runtime Constant Pool）是方法区的一部分，值得注意的是 JDK1.7 已经把常量池转移到堆里面了。Class 文件中的常量池（编译器生成的各种字面量和符号引用）会在类加载后被放入这个区域。运行时常量池可以理解为是类或接口的常量池的运行时表现形式。除了在编译期生成的常量，还允许动态生成，例如 String 类的 intern()。这部分常量也会被放入运行时常量池。</p>
+
+<p>当创建类或接口时，如果构造运行时常量池所需的内存超过了方法区所能提供的最大值，Java 虚拟机会抛出 <code>OutOfMemoryError</code> 异常。</p>
+
+<h2 id="七-直接内存-direct-memory">七、直接内存（Direct Memory）</h2>
+
+<p>在 JDK 1.4 中新加入了 NIO 类，它可以使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆里的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆中来回复制数据。</p>
+
+<hr />
+
+<!-- [1]: /images/post/jvm-runtime-data-area.png
+[2]: /images/post/20180408-175834.png -->
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2018/04/08/jvm-runtime-data-area/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/jvm/">JVM</a>
+          
+          <a href="/tags/java/">Java</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2018/05/31/sql-transaction-isolation/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">SQL 事务隔离</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2018/03/30/mac-utility-tools/">
+            <span class="next-text nav-default">Mac 实用小工具</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '7a4eb110a2dbcaa94575bb84b3b6a118',
+        title: 'JVM 运行时数据区域',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

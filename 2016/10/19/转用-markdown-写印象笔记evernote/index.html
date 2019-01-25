@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[转]用 Markdown 写印象笔记（Evernote） - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" 使用印象笔记很久了，什么都觉得很好，就是不支持 Markdown 书写语法，实在是太遗憾了。今天发现网上有人介绍了一款 Sublime 的一个插件 Evernote，尝试了一下觉得还是一个不错的方案，正好我也很喜欢使用 Sublime 编辑器，如此甚好，哈哈&amp;hellip;
+ " />
+<meta name="keywords" content="Markdown,Evernote,印象笔记" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2016/10/19/%E8%BD%AC%E7%94%A8-markdown-%E5%86%99%E5%8D%B0%E8%B1%A1%E7%AC%94%E8%AE%B0evernote/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="[转]用 Markdown 写印象笔记（Evernote）" />
+<meta property="og:description" content="
+使用印象笔记很久了，什么都觉得很好，就是不支持 Markdown 书写语法，实在是太遗憾了。今天发现网上有人介绍了一款 Sublime 的一个插件 Evernote，尝试了一下觉得还是一个不错的方案，正好我也很喜欢使用 Sublime 编辑器，如此甚好，哈哈&hellip;
+
+
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2016/10/19/%E8%BD%AC%E7%94%A8-markdown-%E5%86%99%E5%8D%B0%E8%B1%A1%E7%AC%94%E8%AE%B0evernote/" /><meta property="article:published_time" content="2016-10-19T10:47:23&#43;00:00"/>
+<meta property="article:modified_time" content="2016-10-19T10:47:23&#43;00:00"/>
+
+<meta itemprop="name" content="[转]用 Markdown 写印象笔记（Evernote）">
+<meta itemprop="description" content="
+使用印象笔记很久了，什么都觉得很好，就是不支持 Markdown 书写语法，实在是太遗憾了。今天发现网上有人介绍了一款 Sublime 的一个插件 Evernote，尝试了一下觉得还是一个不错的方案，正好我也很喜欢使用 Sublime 编辑器，如此甚好，哈哈&hellip;
+
+
+
+">
+
+
+<meta itemprop="datePublished" content="2016-10-19T10:47:23&#43;00:00" />
+<meta itemprop="dateModified" content="2016-10-19T10:47:23&#43;00:00" />
+<meta itemprop="wordCount" content="915">
+
+
+
+<meta itemprop="keywords" content="Markdown,Evernote," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[转]用 Markdown 写印象笔记（Evernote）"/>
+<meta name="twitter:description" content="
+使用印象笔记很久了，什么都觉得很好，就是不支持 Markdown 书写语法，实在是太遗憾了。今天发现网上有人介绍了一款 Sublime 的一个插件 Evernote，尝试了一下觉得还是一个不错的方案，正好我也很喜欢使用 Sublime 编辑器，如此甚好，哈哈&hellip;
+
+
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">[转]用 Markdown 写印象笔记（Evernote）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-19 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"> 开发工具 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 915 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 2 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#一-安装">一、安装</a>
+<ul>
+<li><a href="#1-1-用-sublime-的-packagecontrol-安装-evernote-1-插件">1.1 用 Sublime 的 PackageControl 安装 <a href="https://packagecontrol.io/packages/Evernote">Evernote</a> 插件</a></li>
+<li><a href="#1-2-设置-sublime-与印象笔记做关联">1.2 设置 Sublime 与印象笔记做关联</a></li>
+</ul></li>
+<li><a href="#二-快捷键设置">二、快捷键设置</a></li>
+<li><a href="#三-常用命令">三、常用命令</a></li>
+<li><a href="#四-个人配置">四、个人配置</a></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p>使用印象笔记很久了，什么都觉得很好，就是不支持 Markdown 书写语法，实在是太遗憾了。今天发现网上有人介绍了一款 Sublime 的一个插件 <a href="https://packagecontrol.io/packages/Evernote">Evernote</a>，尝试了一下觉得还是一个不错的方案，正好我也很喜欢使用 Sublime 编辑器，如此甚好，哈哈&hellip;</p>
+</blockquote>
+
+<p><img src="/images/post/2016101901.png" alt="" />
+<!-- {% img /images/post/2016101901.png 400 %} --></p>
+
+<h1 id="一-安装">一、安装</h1>
+
+<h2 id="1-1-用-sublime-的-packagecontrol-安装-evernote-1-插件">1.1 用 Sublime 的 PackageControl 安装 <a href="https://packagecontrol.io/packages/Evernote">Evernote</a> 插件</h2>
+
+<h2 id="1-2-设置-sublime-与印象笔记做关联">1.2 设置 Sublime 与印象笔记做关联</h2>
+
+<p>国内印象笔记用户打开链接：<a href="https://app.yinxiang.com/api/DeveloperToken.action">https://app.yinxiang.com/api/DeveloperToken.action</a>，国际 Evernote 用户打开链接：<a href="https://www.evernote.com/api/DeveloperToken.action">https://www.evernote.com/api/DeveloperToken.action</a>。然后点击页面按钮 <code>Create a developer token</code> 生成开发者秘钥。</p>
+
+<p>打开 Sublime <code>Preferences -&gt; Package Settings -&gt; Evernote -&gt; Settings - User</code> 在文件中贴入如下内容：</p>
+
+<pre><code class="language-json">{
+ &quot;noteStoreUrl&quot;: &quot;&quot;,
+ &quot;token&quot;: &quot;&quot;
+}
+</code></pre>
+
+<p><code>noteStoreUrl</code> 和 <code>token</code> 值为之前打开的页面的上的值，然后保存。</p>
+
+<p>测试是否成功：通过快捷键 <code>ctrl+shift+p</code> 打开 Sublime 命令窗口，输入 <code>evernote</code>，就会看见 Evernote 的许多命令，点击 <code>evernote:list recent notes</code>，如果看到罗列出最新的笔记，则说明授权成功。</p>
+
+<h1 id="二-快捷键设置">二、快捷键设置</h1>
+
+<p>插件默认没有添加快捷键，但可以自己配置。通过快捷键 <code>ctrl+shift+p</code> 打开 Sublime 命令窗口，输入 <code>key binding</code>，选择 <code>User</code> 那，写入你的内容。</p>
+
+<p>下面是我的设置：</p>
+
+<pre><code class="language-json">[
+    { &quot;keys&quot;: [&quot;Ctrl+e&quot;, &quot;Ctrl+o&quot;], &quot;command&quot;: &quot;open_evernote_note&quot; },
+    { &quot;keys&quot;: [&quot;Ctrl+s&quot;], &quot;command&quot;: &quot;save_evernote_note&quot;, &quot;context&quot;: [{&quot;key&quot;: &quot;evernote_note&quot;}, {&quot;key&quot;: &quot;evernote_has_guid&quot;}] },
+    { &quot;keys&quot;: [&quot;Ctrl+s&quot;], &quot;command&quot;: &quot;send_to_evernote&quot;, &quot;context&quot;: [{&quot;key&quot;: &quot;evernote_note&quot;}, {&quot;key&quot;: &quot;evernote_has_guid&quot;, &quot;operator&quot;: &quot;equal&quot;, &quot;operand&quot;: false}] }
+]
+</code></pre>
+
+<p><strong>解释：</strong>意思是，按 <code>ctrl+e, o</code> 后，会打开印象笔记，按 <code>ctrl+s</code> 会将笔记保存并且同步到印象笔记。</p>
+
+<h1 id="三-常用命令">三、常用命令</h1>
+
+<p>通过快捷键 <code>ctrl+shift+p</code>，打开 Sublime 命令窗口就可以使用一些常用命令了。</p>
+
+<ul>
+<li><code>Evernote: New empty note</code>：创建笔记</li>
+<li><code>Evernote: Open Evernote Note</code>：打开印象笔记</li>
+<li><code>Evernote: List recent notes</code>：打开最近笔记</li>
+<li><code>Evernote: Search note</code>：搜索笔记</li>
+</ul>
+
+<h1 id="四-个人配置">四、个人配置</h1>
+
+<p>主要更改了代码的字体和颜色，需要注意的是替换掉 <code>noteStoreUrl</code> 和 <code>token</code> 值为步骤 2 中获取内容。点击 Sublime Text 的 <code>Preferences -&gt; Package Settings -&gt; Evernote -&gt; Settings - User</code> 粘贴以下内容：</p>
+
+<pre><code class="language-json">{
+    &quot;noteStoreUrl&quot;: &quot;更换为步骤 2 中获取的 noteStoreUrl&quot;,
+    &quot;token&quot;: &quot;更换为步骤 2 中获取的 token&quot;,
+    &quot;inline_css&quot;: {
+        &quot;body&quot;: &quot;&quot;,
+        &quot;pre&quot;: &quot;color: #000000; font-family: Consolas,monospace; font-size: 0.9em; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #cccccc; border-radius: 3px; overflow: auto; padding: 6px 10px; margin-bottom: 10px;&quot;,
+        &quot;code&quot;: &quot;color: black; font-family: Consolas,monospace; font-size: 1.1em;&quot;,
+        &quot;inline-code&quot;: &quot;color: #c7254e; font-family: Consolas,monospace; padding: 0.1em 0.2em; margin: 0.1em; font-size: 85%; background-color: #f9f2f4; border-radius: 3px; border: 1px solid #d6d6d6;&quot;,
+        &quot;h1&quot;: &quot;margin-bottom: 1em; margin-top: 1.2em;&quot;,
+        &quot;footnotes&quot;: &quot;border-top: 1px solid #9AB39B; font-size: 80%;&quot;,
+        &quot;hr&quot;: &quot;color:#9AB39B;background-color:#9AB39B;height:1px;border:none;&quot;,
+        &quot;sup&quot;: &quot;color:#6D6D6D;font-size:1ex&quot;,
+        &quot;blockquote&quot;: &quot;border-left: .5ex solid #BFBFBF; margin-left: 0px; padding-left: 1em; margin-top: 1.4285em; margin-bottom: 1.4285em;&quot;,
+        &quot;table&quot;: &quot;border-collapse: collapse; border-spacing: 0; margin: 1em;&quot;,
+        &quot;td&quot;: &quot;border: 1px solid #DDD; padding: 6px 13px;&quot;,
+        &quot;th&quot;: &quot;border: 1px solid #DDD; padding: 6px 13px;&quot;,
+        &quot;tr:odd&quot;: &quot;border: 1px solid #DDD; padding: 6px 13px;&quot;,
+        &quot;tr:even&quot;: &quot;border: 1px solid #DDD; padding: 6px 13px; background-color: #F8F8F8;&quot;
+    },
+    &quot;code_highlighting_style&quot;: &quot;github&quot;,
+    &quot;code_friendly&quot;: true,
+    &quot;gfm_tables&quot;: true,
+    &quot;wiki_tables&quot;: false,
+    &quot;emphasis_mark&quot;: &quot;_&quot;,
+    &quot;strong_mark&quot;: &quot;**&quot;,
+    &quot;item_mark&quot;: &quot;*&quot;,
+    &quot;notes_order&quot;: &quot;updated&quot;,
+    &quot;max_notes&quot;: 100,
+    &quot;update_on_save&quot;: false,
+    &quot;evernote_autocomplete&quot;: true,
+    &quot;sort_notebooks&quot;: false,
+    &quot;show_stacks&quot;: true,
+    &quot;open_single_result&quot;: true,
+    &quot;tab_prefix&quot;: &quot;Evernote: &quot;,
+    &quot;warn_on_close&quot;: true
+}
+</code></pre>
+
+<hr />
+
+<p><a href="http://www.jianshu.com/p/0add426fdd26">原文地址</a></p>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2016/10/19/%E8%BD%AC%E7%94%A8-markdown-%E5%86%99%E5%8D%B0%E8%B1%A1%E7%AC%94%E8%AE%B0evernote/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/markdown/">Markdown</a>
+          
+          <a href="/tags/evernote/">Evernote</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2016/10/24/%E8%AE%BE%E7%BD%AE-sublime-text3-%E4%B8%BB%E9%A2%98%E9%80%8F%E6%98%8E/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">设置 Sublime Text3 主题透明</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2016/10/10/%E8%BD%AC-kafka%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">
+            <span class="next-text nav-default">[转] Kafka入门教程</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '0b51a3d10f5e6f42706f896d471e39c7',
+        title: '[转]用 Markdown 写印象笔记（Evernote）',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

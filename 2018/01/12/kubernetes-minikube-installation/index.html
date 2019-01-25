@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Kubernetes 学习笔记之 MiniKube 安装 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="Kubernetes 集群的搭建是有一定难度的，尤其是对于初学者来说，好多概念和原理不懂，即使有现成的教程也会出现很多不可预知的问题，很容易打击学习的积极性，就此弃坑。好在 Kubernetes 社区提供了可以在本地开发和体验的极简集群安装 MiniKube，对于入门学习来说很方便。
+ MiniKube 官方安装介绍已经非常详细了，可以参考 installation。但是在国内由于网络访问原因（懂的），即使有梯子也很折腾，所以记录一下阿里修改后的 MiniKube 安装。使用阿里修改后的 MiniKube 就可以从阿里云的镜像地址来获取所需 Docker 镜像和配置，其它的并没有差异，下文着重介绍。
+" />
+<meta name="keywords" content="minikube,, kubernetes,, k8s" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2018/01/12/kubernetes-minikube-installation/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Kubernetes 学习笔记之 MiniKube 安装" />
+<meta property="og:description" content="Kubernetes 集群的搭建是有一定难度的，尤其是对于初学者来说，好多概念和原理不懂，即使有现成的教程也会出现很多不可预知的问题，很容易打击学习的积极性，就此弃坑。好在 Kubernetes 社区提供了可以在本地开发和体验的极简集群安装 MiniKube，对于入门学习来说很方便。
+
+
+
+
+
+
+  
+
+
+
+MiniKube 官方安装介绍已经非常详细了，可以参考 installation。但是在国内由于网络访问原因（懂的），即使有梯子也很折腾，所以记录一下阿里修改后的 MiniKube 安装。使用阿里修改后的 MiniKube 就可以从阿里云的镜像地址来获取所需 Docker 镜像和配置，其它的并没有差异，下文着重介绍。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2018/01/12/kubernetes-minikube-installation/" /><meta property="article:published_time" content="2018-01-12T09:23:01&#43;00:00"/>
+<meta property="article:modified_time" content="2018-01-12T09:23:01&#43;00:00"/>
+
+<meta itemprop="name" content="Kubernetes 学习笔记之 MiniKube 安装">
+<meta itemprop="description" content="Kubernetes 集群的搭建是有一定难度的，尤其是对于初学者来说，好多概念和原理不懂，即使有现成的教程也会出现很多不可预知的问题，很容易打击学习的积极性，就此弃坑。好在 Kubernetes 社区提供了可以在本地开发和体验的极简集群安装 MiniKube，对于入门学习来说很方便。
+
+
+
+
+
+
+  
+
+
+
+MiniKube 官方安装介绍已经非常详细了，可以参考 installation。但是在国内由于网络访问原因（懂的），即使有梯子也很折腾，所以记录一下阿里修改后的 MiniKube 安装。使用阿里修改后的 MiniKube 就可以从阿里云的镜像地址来获取所需 Docker 镜像和配置，其它的并没有差异，下文着重介绍。">
+
+
+<meta itemprop="datePublished" content="2018-01-12T09:23:01&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-12T09:23:01&#43;00:00" />
+<meta itemprop="wordCount" content="967">
+
+
+
+<meta itemprop="keywords" content="minikube,kubernetes,k8s," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes 学习笔记之 MiniKube 安装"/>
+<meta name="twitter:description" content="Kubernetes 集群的搭建是有一定难度的，尤其是对于初学者来说，好多概念和原理不懂，即使有现成的教程也会出现很多不可预知的问题，很容易打击学习的积极性，就此弃坑。好在 Kubernetes 社区提供了可以在本地开发和体验的极简集群安装 MiniKube，对于入门学习来说很方便。
+
+
+
+
+
+
+  
+
+
+
+MiniKube 官方安装介绍已经非常详细了，可以参考 installation。但是在国内由于网络访问原因（懂的），即使有梯子也很折腾，所以记录一下阿里修改后的 MiniKube 安装。使用阿里修改后的 MiniKube 就可以从阿里云的镜像地址来获取所需 Docker 镜像和配置，其它的并没有差异，下文着重介绍。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Kubernetes 学习笔记之 MiniKube 安装</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2018-01-12 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/kubernetes/"> kubernetes </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 967 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 2 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-kubectl-安装">一、kubectl 安装</a></li>
+<li><a href="#二-minikube-安装">二、MiniKube 安装</a>
+<ul>
+<li><a href="#2-1-二级制文件安装">2.1 二级制文件安装</a></li>
+<li><a href="#2-2-源码编译安装">2.2 源码编译安装</a></li>
+</ul></li>
+<li><a href="#三-简单使用">三、简单使用</a>
+<ul>
+<li><a href="#3-1-启动">3.1 启动</a></li>
+<li><a href="#3-2-检测状态">3.2 检测状态</a></li>
+<li><a href="#3-3-启动-kubernetes-dashboard">3.3 启动 kubernetes dashboard</a></li>
+<li><a href="#3-4-测试">3.4 测试</a></li>
+<li><a href="#3-5-其它">3.5 其它</a></li>
+</ul></li>
+<li><a href="#参考文献">参考文献</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p>Kubernetes 集群的搭建是有一定难度的，尤其是对于初学者来说，好多概念和原理不懂，即使有现成的教程也会出现很多不可预知的问题，很容易打击学习的积极性，就此弃坑。好在 Kubernetes 社区提供了可以在本地开发和体验的极简集群安装 MiniKube，对于入门学习来说很方便。</p>
+
+<!-- {% img https://wx3.sinaimg.cn/large/687148dbly1fo7n00rkl6j20b40b4goj.jpg 300 %} -->
+
+<!-- ![minikube][1] -->
+
+<div class='align-center'>
+  <p><img src="https://wx3.sinaimg.cn/large/687148dbly1fo7n00rkl6j20b40b4goj.jpg" alt="img" title="img" /></p>
+
+</div>
+
+<p>MiniKube 官方安装介绍已经非常详细了，可以参考 <a href="https://github.com/kubernetes/minikube#installation">installation</a>。但是在国内由于网络访问原因（懂的），即使有梯子也很折腾，所以记录一下阿里修改后的 MiniKube 安装。使用阿里修改后的 MiniKube 就可以从阿里云的镜像地址来获取所需 Docker 镜像和配置，其它的并没有差异，下文着重介绍。</p>
+
+<h2 id="一-kubectl-安装">一、kubectl 安装</h2>
+
+<p>MiniKube 的安装需要先安装 kubectl 及相关驱动，这没什么好说的，参考<a href="https://github.com/kubernetes/minikube#requirements">官方介绍</a>。</p>
+
+<p>另 kubectl 也可通过源代码编译安装，编译源码需要有 Git、Golang 环境的支撑。</p>
+
+<pre><code class="language-bash">➜ git clone https://github.com/kubernetes/kubernetes.git
+➜ cd kubernetes
+➜ make
+➜ sudo cp _output/bin/kubectl /usr/local/bin/
+➜ sudo chmod +x /usr/local/bin/kubectl
+</code></pre>
+
+<h2 id="二-minikube-安装">二、MiniKube 安装</h2>
+
+<p>MiniKube 是使用 Go 语言开发的，所以安装其实很方便，一是通过下载基于不同平台早已编译好的二级制文件安装，二是可以编译源文件安装。</p>
+
+<h3 id="2-1-二级制文件安装">2.1 二级制文件安装</h3>
+
+<ul>
+<li>Mac OSX 平台</li>
+</ul>
+
+<pre><code class="language-shell">➜ curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.24.1/minikube-darwin-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/
+</code></pre>
+
+<ul>
+<li>Linux 平台</li>
+</ul>
+
+<pre><code class="language-shell">➜ curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.24.1/minikube-linux-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/
+</code></pre>
+
+<ul>
+<li>Windows 平台</li>
+</ul>
+
+<p>下载 <a href="http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v0.24.1/minikube-windows-amd64.exe">minikube-windows-amd64.exe</a> 文件，并重命名为 <code>minikube.exe</code>，然后加入到环境变量路径下即可。</p>
+
+<h3 id="2-2-源码编译安装">2.2 源码编译安装</h3>
+
+<p>编译源码需要有 Git、Golang 环境的支撑。</p>
+
+<pre><code class="language-bash">➜ git clone https://github.com/AliyunContainerService/minikube
+➜ cd minikube
+➜ git checkout aliyun-v0.24.1
+➜ make
+➜ sudo cp out/minikube /usr/local/bin/
+➜ sudo chmod +x /usr/local/bin/minikube
+</code></pre>
+
+<blockquote>
+<p>示例版本是 <code>v0.24.1</code>，可更改为<a href="https://github.com/AliyunContainerService/minikube/branches/all">其它版本</a>。</p>
+</blockquote>
+
+<h2 id="三-简单使用">三、简单使用</h2>
+
+<h3 id="3-1-启动">3.1 启动</h3>
+
+<p>默认启动使用的是 VirtualBox 驱动，使用 <code>--vm-driver</code> 参数可以指定其它驱动。</p>
+
+<pre><code class="language-bash"># 设置 docker 加速镜像
+➜ minikube start --registry-mirror=https://registry.docker-cn.com
+Starting local Kubernetes v1.8.0 cluster...
+Starting VM...
+Getting VM IP address...
+Moving files into cluster...
+Setting up certs...
+Connecting to cluster...
+Setting up kubeconfig...
+Starting cluster components...
+Kubectl is now configured to use the cluster.
+Loading cached images from config file.
+</code></pre>
+
+<h3 id="3-2-检测状态">3.2 检测状态</h3>
+
+<pre><code class="language-bash">➜ minikube status
+minikube: Running
+cluster: Running
+kubectl: Correctly Configured: pointing to minikube-vm at 192.168.99.100
+</code></pre>
+
+<h3 id="3-3-启动-kubernetes-dashboard">3.3 启动 kubernetes dashboard</h3>
+
+<pre><code class="language-bash">➜ minikube dashboard
+Opening kubernetes dashboard in default browser...
+</code></pre>
+
+<p>输入以上命令，浏览器中应该就会显示以下界面：</p>
+
+<p><img src="https://ws1.sinaimg.cn/large/687148dbly1fndlyb1kpuj227s1ain5a.jpg" alt="minikube-dashboard" /></p>
+
+<h3 id="3-4-测试">3.4 测试</h3>
+
+<ul>
+<li>运行一个 nginx 的 pod</li>
+</ul>
+
+<pre><code class="language-bash">➜ kubectl run hello --image=nginx --port=80
+deployment &quot;hello&quot; created
+</code></pre>
+
+<ul>
+<li>导出运行的 nginx 服务</li>
+</ul>
+
+<pre><code class="language-bash">➜ kubectl expose deployment hello --type=NodePort
+service &quot;hello&quot; exposed
+</code></pre>
+
+<ul>
+<li>查看一下运行情况，需要等一会才会显示状态为 <code>Running</code></li>
+</ul>
+
+<pre><code class="language-bash">➜ kubectl get pod
+NAME                    READY     STATUS    RESTARTS   AGE
+hello-6dbbbb95d-4cqwz   1/1       Running   0          2m
+</code></pre>
+
+<ul>
+<li>curl 访问测试</li>
+</ul>
+
+<pre><code class="language-bash">➜ curl $(minikube service hello --url)
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;style&gt;
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+&lt;p&gt;If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.&lt;/p&gt;
+
+&lt;p&gt;For online documentation and support please refer to
+&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;
+Commercial support is available at
+&lt;a href=&quot;http://nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3 id="3-5-其它">3.5 其它</h3>
+
+<pre><code class="language-bash"># 查看集群的所有资源
+➜ kubectl get all
+➜ kubectl get all -o wide
+
+# 进入节点服务器
+➜ minikube ssh
+
+# 执行节点服务器命令，例如查看节点 docker info
+➜ minikube ssh -- docker info
+
+# 删除集群
+➜ minikube delete
+
+# 关闭集群
+➜ minikube stop
+</code></pre>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ul>
+<li><a href="https://yq.aliyun.com/articles/221687">Minikube - Kubernetes本地实验环境</a></li>
+</ul>
+
+<hr />
+
+<!-- [1]: /images/post/minikube.jpg -->
+
+<!-- [2]: /images/post/minikube-dashboard.jpg -->
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2018/01/12/kubernetes-minikube-installation/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/minikube/">minikube</a>
+          
+          <a href="/tags/kubernetes/">kubernetes</a>
+          
+          <a href="/tags/k8s/">k8s</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2018/01/26/golang-reflect/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Golang 反射使用总结</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2017/12/31/summary-in-2017/">
+            <span class="next-text nav-default">又是一年岁末时...</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '316e502ef2be9be199c79746227723e6',
+        title: 'Kubernetes 学习笔记之 MiniKube 安装',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

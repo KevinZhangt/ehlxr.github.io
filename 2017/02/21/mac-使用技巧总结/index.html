@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Mac 使用技巧总结 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" Mac 系统日常使用技巧归纳总结。
+ 一、Mac 中 Finder 显示、关闭隐藏文件 1.1 终端命令模式  打开终端，输入：  # 此命令显示隐藏文件 defaults write com.apple.finder AppleShowAllFiles -bool true # 此命令关闭显示隐藏文件 defaults write com.apple.finder AppleShowAllFiles -bool false   命令运行之后需要重新加载 Finder  快捷键 Option &#43; Command &#43; ESC，选中 Finder，重新启动即可
+1.2 Finder 快捷键 在 macOS Sierra（10.12） 版本的系统中，我们可以使用快捷键⌘⇧.(Command &#43; Shift &#43; .) 来快速（在 Finder 中）显示和隐藏隐藏文件了。
+" />
+<meta name="keywords" content="Mac" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2017/02/21/mac-%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Mac 使用技巧总结" />
+<meta property="og:description" content="
+Mac 系统日常使用技巧归纳总结。
+
+
+一、Mac 中 Finder 显示、关闭隐藏文件
+
+1.1 终端命令模式
+
+
+打开终端，输入：
+
+
+  # 此命令显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+
+  # 此命令关闭显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool false
+
+
+
+命令运行之后需要重新加载 Finder
+
+
+快捷键 Option &#43; Command &#43; ESC，选中 Finder，重新启动即可
+
+1.2 Finder 快捷键
+
+在 macOS Sierra（10.12） 版本的系统中，我们可以使用快捷键⌘⇧.(Command &#43; Shift &#43; .) 来快速（在 Finder 中）显示和隐藏隐藏文件了。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2017/02/21/mac-%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/" /><meta property="article:published_time" content="2017-02-21T21:40:06&#43;00:00"/>
+<meta property="article:modified_time" content="2017-02-21T21:40:06&#43;00:00"/>
+
+<meta itemprop="name" content="Mac 使用技巧总结">
+<meta itemprop="description" content="
+Mac 系统日常使用技巧归纳总结。
+
+
+一、Mac 中 Finder 显示、关闭隐藏文件
+
+1.1 终端命令模式
+
+
+打开终端，输入：
+
+
+  # 此命令显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+
+  # 此命令关闭显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool false
+
+
+
+命令运行之后需要重新加载 Finder
+
+
+快捷键 Option &#43; Command &#43; ESC，选中 Finder，重新启动即可
+
+1.2 Finder 快捷键
+
+在 macOS Sierra（10.12） 版本的系统中，我们可以使用快捷键⌘⇧.(Command &#43; Shift &#43; .) 来快速（在 Finder 中）显示和隐藏隐藏文件了。">
+
+
+<meta itemprop="datePublished" content="2017-02-21T21:40:06&#43;00:00" />
+<meta itemprop="dateModified" content="2017-02-21T21:40:06&#43;00:00" />
+<meta itemprop="wordCount" content="1179">
+
+
+
+<meta itemprop="keywords" content="Mac," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mac 使用技巧总结"/>
+<meta name="twitter:description" content="
+Mac 系统日常使用技巧归纳总结。
+
+
+一、Mac 中 Finder 显示、关闭隐藏文件
+
+1.1 终端命令模式
+
+
+打开终端，输入：
+
+
+  # 此命令显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+
+  # 此命令关闭显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool false
+
+
+
+命令运行之后需要重新加载 Finder
+
+
+快捷键 Option &#43; Command &#43; ESC，选中 Finder，重新启动即可
+
+1.2 Finder 快捷键
+
+在 macOS Sierra（10.12） 版本的系统中，我们可以使用快捷键⌘⇧.(Command &#43; Shift &#43; .) 来快速（在 Finder 中）显示和隐藏隐藏文件了。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Mac 使用技巧总结</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2017-02-21 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"> 开发工具 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1179 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 3 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#一-mac-中-finder-显示-关闭隐藏文件">一、Mac 中 Finder 显示、关闭隐藏文件</a>
+<ul>
+<li><a href="#1-1-终端命令模式">1.1 终端命令模式</a></li>
+<li><a href="#1-2-finder-快捷键">1.2 Finder 快捷键</a></li>
+</ul></li>
+<li><a href="#二-terminal-中使用-sublime-打开文件">二、Terminal 中使用 Sublime 打开文件</a>
+<ul>
+<li><a href="#2-1-如果使用默认-shell">2.1 如果使用默认 Shell</a></li>
+<li><a href="#2-2-如果使用-zsh">2.2 如果使用 zsh</a></li>
+<li><a href="#2-3-使用-sublime-打开指定的文件">2.3 使用 Sublime 打开指定的文件</a></li>
+</ul></li>
+<li><a href="#三-多屏切换-dock-显示">三、多屏切换 dock 显示</a></li>
+<li><a href="#四-terminal-重启-finder-dock-等命令">四、Terminal 重启 Finder、dock 等命令</a></li>
+<li><a href="#五-terminal-中用打开当前路径的文件夹">五、Terminal 中用打开当前路径的文件夹</a></li>
+<li><a href="#六-剪贴文件">六、剪贴文件</a></li>
+<li><a href="#七-快速打开最小化程序">七、快速打开最小化程序</a></li>
+<li><a href="#八-常用快捷键">八、常用快捷键</a></li>
+<li><a href="#九-ds-store-文件处理">九、.DS_Store 文件处理</a>
+<ul>
+<li><a href="#9-1-清除文件">9.1 清除文件</a></li>
+<li><a href="#9-2-禁用或启用自动生成">9.2 禁用或启用自动生成</a></li>
+</ul></li>
+<li><a href="#十-ntfs-格式移动盘写入文件">十、NTFS 格式移动盘写入文件</a></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p>Mac 系统日常使用技巧归纳总结。</p>
+</blockquote>
+
+<h1 id="一-mac-中-finder-显示-关闭隐藏文件">一、Mac 中 Finder 显示、关闭隐藏文件</h1>
+
+<h2 id="1-1-终端命令模式">1.1 终端命令模式</h2>
+
+<ul>
+<li>打开终端，输入：</li>
+</ul>
+
+<pre><code class="language-shell">  # 此命令显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool true
+
+  # 此命令关闭显示隐藏文件
+  defaults write com.apple.finder AppleShowAllFiles -bool false
+</code></pre>
+
+<ul>
+<li>命令运行之后需要重新加载 Finder</li>
+</ul>
+
+<p>快捷键 <code>Option + Command + ESC</code>，选中 <code>Finder</code>，重新启动即可</p>
+
+<h2 id="1-2-finder-快捷键">1.2 Finder 快捷键</h2>
+
+<p>在 macOS Sierra（10.12） 版本的系统中，我们可以使用快捷键<code>⌘⇧.</code>(<code>Command + Shift + .</code>) 来快速（在 Finder 中）显示和隐藏隐藏文件了。</p>
+
+<h1 id="二-terminal-中使用-sublime-打开文件">二、Terminal 中使用 Sublime 打开文件</h1>
+
+<h2 id="2-1-如果使用默认-shell">2.1 如果使用默认 Shell</h2>
+
+<p>在 <code>Terminal</code> 输入以下命令：</p>
+
+<pre><code class="language-shell">sudo ln -s &quot;/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl&quot; /usr/bin/subl
+</code></pre>
+
+<h2 id="2-2-如果使用-zsh">2.2 如果使用 zsh</h2>
+
+<p>在文件 <code>~/.zshrc</code> 最后添加</p>
+
+<pre><code class="language-shell">alias subl=&quot;'/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'&quot;
+
+alias nano=&quot;subl&quot;
+
+export EDITOR=&quot;subl&quot;
+</code></pre>
+
+<p>然后在 <code>Terminal</code> 中使用 <code>subl</code> 就可以打开 <code>Sublime</code> 了。</p>
+
+<h2 id="2-3-使用-sublime-打开指定的文件">2.3 使用 Sublime 打开指定的文件</h2>
+
+<pre><code class="language-shell">open -a Sublime\ Text .m2/settings.xml
+</code></pre>
+
+<blockquote>
+<p>可以使用 <code>Tab</code> 自定补全应用名称</p>
+</blockquote>
+
+<h1 id="三-多屏切换-dock-显示">三、多屏切换 dock 显示</h1>
+
+<p>如果 <code>dock</code> 在屏幕底部显示，移动鼠标到要显示 <code>dock</code> 的屏幕上，单击使屏幕处于选中状态，在屏幕底部中间部位向下滑动鼠标即可移动 <code>dock</code> 到当前屏幕上显示。</p>
+
+<h1 id="四-terminal-重启-finder-dock-等命令">四、Terminal 重启 Finder、dock 等命令</h1>
+
+<pre><code class="language-shell"># Finder 崩溃重启
+killall -kill Finder
+
+# Dock 崩溃重启
+killall -kill Dock
+
+# 菜单栏崩溃重启
+killall -kill SystemUIServer
+</code></pre>
+
+<h1 id="五-terminal-中用打开当前路径的文件夹">五、Terminal 中用打开当前路径的文件夹</h1>
+
+<p>在 <code>Terminal</code> 中输入命令：</p>
+
+<pre><code class="language-shell">open .
+</code></pre>
+
+<h1 id="六-剪贴文件">六、剪贴文件</h1>
+
+<pre><code class="language-shell"># 复制
+Command + c
+
+# 剪切到当前目录
+Command + Option + v
+</code></pre>
+
+<h1 id="七-快速打开最小化程序">七、快速打开最小化程序</h1>
+
+<p><code>Command + Tab</code> 切换程序的时候，最小化的程序不自动弹出窗口，解决办法如下：</p>
+
+<ul>
+<li>用 <code>Command + Tab</code> 切换到要打开的程序</li>
+<li>先松开 <code>Tab</code> 键，不要松开 <code>Command</code> 键</li>
+<li>然后按住 <code>Option</code> 键</li>
+<li>然后依次松开 <code>Command</code> 和 <code>Option</code> 键</li>
+</ul>
+
+<p>如上操作就可以快速打开最小化的程序了。</p>
+
+<h1 id="八-常用快捷键">八、常用快捷键</h1>
+
+<p><a href="https://support.apple.com/zh-cn/HT201236">Mac 键盘快捷键官方参考</a></p>
+
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>快捷键</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>预览文件</td>
+<td><code>空格</code></td>
+</tr>
+
+<tr>
+<td>重命名</td>
+<td><code>Enter</code></td>
+</tr>
+
+<tr>
+<td>打开文件</td>
+<td><code>Command + o</code>、<code>Command + ↓</code></td>
+</tr>
+
+<tr>
+<td>显示桌面</td>
+<td><code>F11</code></td>
+</tr>
+
+<tr>
+<td>切换窗口全屏状态</td>
+<td><code>Ctrl + Cmmad + f</code></td>
+</tr>
+
+<tr>
+<td>影藏/显示 Dock</td>
+<td><code>Command + Option + d</code></td>
+</tr>
+
+<tr>
+<td>输入 emoji 表情</td>
+<td><code>Ctrl + Cmmad + 空格</code></td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="九-ds-store-文件处理">九、.DS_Store 文件处理</h1>
+
+<p><a href="https://zh.wikipedia.org/wiki/.DS_Store">.DS_Store (英文全称 Desktop Services Store) 是一种由苹果公司的 Mac OS X 操作系统所创造的隐藏文件，目的在于存贮目录的自定义属性，例如文件们的图标位置或者是背景色的选择。</a></p>
+
+<h2 id="9-1-清除文件">9.1 清除文件</h2>
+
+<p>清除命令：</p>
+
+<p><code>sudo find / -name &quot;.DS_Store&quot; -depth -exec rm {} \;</code></p>
+
+<h2 id="9-2-禁用或启用自动生成">9.2 禁用或启用自动生成</h2>
+
+<p>执行以下命令，回车执行，重启 Mac 即可生效。</p>
+
+<ul>
+<li>禁止.DS_store生成：</li>
+</ul>
+
+<p><code>defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE</code></p>
+
+<ul>
+<li>恢复.DS_store生成：</li>
+</ul>
+
+<p><code>defaults delete com.apple.desktopservices DSDontWriteNetworkStores</code></p>
+
+<h1 id="十-ntfs-格式移动盘写入文件">十、NTFS 格式移动盘写入文件</h1>
+
+<p>一般来说，MacOS 是不支持 NTFS 格式磁盘的写入，可以借助三方工具，例如：Tuxera NTFS，不过收费还挺高的。这里介绍一种方法，不需要借助三方工具也可以实现 NTFS 格式磁盘写入。（基于系统版本 <code>macOS Sierra 10.12.4</code>  亲测可行）</p>
+
+<ul>
+<li>插入移动硬盘，终端输入命令：<code>$ diskutil list</code> 查看移动硬盘名称。例如：</li>
+</ul>
+
+<pre><code>  $ diskutil list
+  ....
+
+  /dev/disk2 (external, physical):
+     #:                       TYPE NAME            SIZE       IDENTIFIER
+     0:     FDisk_partition_scheme                 *500.1 GB   disk2
+     1:               Windows_NTFS EHLXR           500.1 GB   disk2s4
+</code></pre>
+
+<ul>
+<li>编辑系统文件 <code>sudo vim /etc/fstab</code> ，写入以下内容，然后保存。</li>
+</ul>
+
+<pre><code>  LABEL=EHLXR none ntfs rw,auto,nobrowse
+</code></pre>
+
+<p>其中 <code>EHLXR</code> 为移动硬盘名称。</p>
+
+<ul>
+<li><p>推出硬盘重新插入，这时候桌面已不再显示移动硬盘图标。</p></li>
+
+<li><p>在 Finder 中通过快捷键 <code>Command + Shift + g</code> 输入<code>/Volumes</code> 就可以重新看到移动硬盘，这时候打开移动硬盘就可以写入文件了。</p></li>
+
+<li><p>为了方便起见，可以通过命令：<code>sudo ln -s /Volumes ~/Desktop/Volumes</code> 在桌面建立快捷方式，方便查看。</p></li>
+</ul>
+
+<hr />
+
+<p><em>未完待续&hellip;</em></p>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2017/02/21/mac-%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7%E6%80%BB%E7%BB%93/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/mac/">Mac</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2017/03/29/java-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Java 获取系统的配置信息</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2017/01/18/linux-%E7%9A%84-nohup-%E5%91%BD%E4%BB%A4%E7%9A%84%E7%94%A8%E6%B3%95/">
+            <span class="next-text nav-default">Linux 的 nohup 命令的用法</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '7833677c76af9cd43620d8d961753bac',
+        title: 'Mac 使用技巧总结',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

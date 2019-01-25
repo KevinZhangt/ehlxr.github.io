@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mysql on 胡言乱语</title>
+    <link>https://ehlxr.cf/tags/mysql/</link>
+    <description>Recent content in Mysql on 胡言乱语</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 31 May 2018 13:55:26 +0000</lastBuildDate>
+    
+	<atom:link href="https://ehlxr.cf/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SQL 事务隔离</title>
+      <link>https://ehlxr.cf/2018/05/31/sql-transaction-isolation/</link>
+      <pubDate>Thu, 31 May 2018 13:55:26 +0000</pubDate>
+      
+      <guid>https://ehlxr.cf/2018/05/31/sql-transaction-isolation/</guid>
+      <description>SQL 标准定义了 4 类隔离级别，包括了一些具体规则，用来限定事务内外的哪些改变是可见的，哪些是不可见的。低级别的隔离级一般支持更高的并发处理，并拥</description>
+    </item>
+    
+    <item>
+      <title>Oracle 与 MySQL 知识总结</title>
+      <link>https://ehlxr.cf/2016/07/28/oracle-%E4%B8%8E-mysql-%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 28 Jul 2016 14:06:36 +0000</pubDate>
+      
+      <guid>https://ehlxr.cf/2016/07/28/oracle-%E4%B8%8E-mysql-%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;对日常工作中使用 Oracle 和 MySQL 数据库知识对比总结。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&#34;sqlplus-连接数据库的方式&#34;&gt;SQLPlus 连接数据库的方式&lt;/h1&gt;
+
+&lt;h2 id=&#34;cmd-中输入-sqlplus-用户名-密码-数据库实例&#34;&gt;cmd 中输入：sqlplus 用户名/密码@数据库实例&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sqlplus system/lxr316@oracle
+sqlplus sys/admin as sysdba
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;打开-sqlplus-直接输入用户名和密码&#34;&gt;打开 SQLPlus 直接输入用户名和密码&lt;/h2&gt;
+
+&lt;h2 id=&#34;使用命令&#34;&gt;使用命令&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;connect sys/admin as sysdba
+connect system/lxr316
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>MySQL日期函数</title>
+      <link>https://ehlxr.cf/2016/07/20/mysql%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Wed, 20 Jul 2016 14:16:17 +0000</pubDate>
+      
+      <guid>https://ehlxr.cf/2016/07/20/mysql%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0/</guid>
+      <description>&lt;h4 id=&#34;1-取得当天&#34;&gt;1. 取得当天&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;mysql&amp;gt; SELECT curdate();
++------------+
+| curdate()  |
++------------+
+| 2013-07-29 |
++------------+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;2-取得当前日期&#34;&gt;2. 取得当前日期&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;mysql&amp;gt; select sysdate();
++---------------------+
+| sysdate()           |
++---------------------+
+| 2016-05-30 13:58:17 |
++---------------------+
+1 row in set
+
+mysql&amp;gt; select now();
++---------------------+
+| now()               |
++---------------------+
+| 2016-05-30 13:58:29 |
++---------------------+
+1 row in set
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

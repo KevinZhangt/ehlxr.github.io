@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Golang 反射使用总结 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="Go 语言中反射的操作主要定义在标准库 reflect 中，在标准库中定义了两种类型来表现运行时的对象信息，分别是：reflect.Value（反射对象的类型）和 reflect.Type（反射对象的值），Go 语言中所有反射操作都是基于这两个类型进行的。
+为了方便演示操作（完整代码示例），首先定义以下结构体以及字段、方法：
+" />
+<meta name="keywords" content="Golang,, Go" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2018/01/26/golang-reflect/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Golang 反射使用总结" />
+<meta property="og:description" content="Go 语言中反射的操作主要定义在标准库 reflect 中，在标准库中定义了两种类型来表现运行时的对象信息，分别是：reflect.Value（反射对象的类型）和 reflect.Type（反射对象的值），Go 语言中所有反射操作都是基于这两个类型进行的。
+
+
+
+
+
+为了方便演示操作（完整代码示例），首先定义以下结构体以及字段、方法：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2018/01/26/golang-reflect/" /><meta property="article:published_time" content="2018-01-26T21:27:56&#43;00:00"/>
+<meta property="article:modified_time" content="2018-01-26T21:27:56&#43;00:00"/>
+
+<meta itemprop="name" content="Golang 反射使用总结">
+<meta itemprop="description" content="Go 语言中反射的操作主要定义在标准库 reflect 中，在标准库中定义了两种类型来表现运行时的对象信息，分别是：reflect.Value（反射对象的类型）和 reflect.Type（反射对象的值），Go 语言中所有反射操作都是基于这两个类型进行的。
+
+
+
+
+
+为了方便演示操作（完整代码示例），首先定义以下结构体以及字段、方法：">
+
+
+<meta itemprop="datePublished" content="2018-01-26T21:27:56&#43;00:00" />
+<meta itemprop="dateModified" content="2018-01-26T21:27:56&#43;00:00" />
+<meta itemprop="wordCount" content="1264">
+
+
+
+<meta itemprop="keywords" content="Golang,Go," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Golang 反射使用总结"/>
+<meta name="twitter:description" content="Go 语言中反射的操作主要定义在标准库 reflect 中，在标准库中定义了两种类型来表现运行时的对象信息，分别是：reflect.Value（反射对象的类型）和 reflect.Type（反射对象的值），Go 语言中所有反射操作都是基于这两个类型进行的。
+
+
+
+
+
+为了方便演示操作（完整代码示例），首先定义以下结构体以及字段、方法："/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Golang 反射使用总结</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2018-01-26 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/golang/"> Golang </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1264 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 3 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-反射对象-value-和-type">一、反射对象 Value 和 Type</a></li>
+<li><a href="#二-反射对象的-kind">二、反射对象的 Kind</a></li>
+<li><a href="#三-反射对象的字段">三、反射对象的字段</a></li>
+<li><a href="#四-反射对象的方法">四、反射对象的方法</a></li>
+<li><a href="#五-反射对象-value-还原">五、反射对象 Value 还原</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p>Go 语言中反射的操作主要定义在标准库 <a href="https://golang.org/pkg/reflect/"><code>reflect</code></a> 中，在标准库中定义了两种类型来表现运行时的对象信息，分别是：<a href="https://golang.org/pkg/reflect/#Value"><code>reflect.Value</code></a>（反射对象的类型）和 <a href="https://golang.org/pkg/reflect/#Type"><code>reflect.Type</code></a>（反射对象的值），Go 语言中所有反射操作都是基于这两个类型进行的。</p>
+
+<!-- {% img https://ws1.sinaimg.cn/large/687148dbly1fo6mhg1xw3j20mf0c10v1.jpg 350 %} -->
+
+<p><img src="https://ws1.sinaimg.cn/large/687148dbly1fo6mhg1xw3j20mf0c10v1.jpg" alt="golang-reflect" /></p>
+
+<p>为了方便演示操作（<a href="https://github.com/ehlxr/go-utils/blob/master/common/reflect/main.go">完整代码示例</a>），首先定义以下结构体以及字段、方法：</p>
+
+<pre><code class="language-golang">type User struct {
+    Name string `json:&quot;name&quot;`
+    Age  int    `json:&quot;age&quot; default:&quot;18&quot;`
+    addr string `json:&quot;addr&quot;`
+}
+
+func (u User) Do(in string) (string, int) {
+    fmt.Printf(&quot;%s Name is %s, Age is %d \n&quot;, in, u.Name, u.Age)
+    return u.Name, u.Age
+}
+</code></pre>
+
+<h2 id="一-反射对象-value-和-type">一、反射对象 Value 和 Type</h2>
+
+<p>既然 Go 语言中所有反射操作都是基于 <code>Value</code> 和 <code>Type</code> 进行的，那么想要进行反射操作，首先就要获取到反射对象的这两个类型对象才可以。</p>
+
+<p><code>reflect</code> 包提供了两个函数：<code>reflect.ValueOf()</code> 和 <code>reflect.TypeOf()</code>，通过这两个函数就可以方便的获取到任意类型（用 <code>interface{}</code> 表示任意类型）的 <code>Value</code> 对象和 <code>Type</code> 对象。例如：</p>
+
+<pre><code class="language-golang">u := User{&quot;tom&quot;, 27, &quot;beijing&quot;}
+
+v := reflect.ValueOf(u)
+fmt.Println(v)
+
+t := reflect.TypeOf(u)
+fmt.Println(t)
+</code></pre>
+
+<p>知道 <code>Value</code> 对象后，也可以通过 <code>Value.Type()</code> 方法获取到 <code>Type</code> 对象。例如：</p>
+
+<pre><code class="language-golang">t1 := v.Type()
+fmt.Println(t == t1)
+</code></pre>
+
+<p>可以看到输出结果为 <code>true</code>。</p>
+
+<p>通过 <code>Type</code> 类型对象也可以获取到 <code>Value</code> 类型对象，不过是零值的指针。例如：</p>
+
+<pre><code class="language-golang">v1 := reflect.New(t)
+fmt.Println(v1)
+</code></pre>
+
+<p>结果为：<code>&amp;{ 0}</code></p>
+
+<h2 id="二-反射对象的-kind">二、反射对象的 Kind</h2>
+
+<p><code>Kind</code> 表示反射对象的类型 <code>Type</code> 所代表的具体类型，零值表示无效的类型，具体有以下类型值：</p>
+
+<pre><code class="language-golang">type Kind uint
+
+const (
+    Invalid Kind = iota
+    Bool
+    Int
+    Int8
+    Int16
+    Int32
+    Int64
+    Uint
+    Uint8
+    Uint16
+    Uint32
+    Uint64
+    Uintptr
+    Float32
+    Float64
+    Complex64
+    Complex128
+    Array
+    Chan
+    Func
+    Interface
+    Map
+    Ptr
+    Slice
+    String
+    Struct
+    UnsafePointer
+)
+</code></pre>
+
+<p>可以通过 <code>Value.Kind()</code> 或者 <code>Type.Kind()</code> 函数获得。例如：</p>
+
+<pre><code class="language-golang">// 获取 Kind 类型
+k := t.Kind()
+fmt.Println(k)
+k1 := v.Kind()
+fmt.Println(k1)
+fmt.Println(k == k1)
+fmt.Println()
+</code></pre>
+
+<p>可以看到两种方式获取的结果是一样的，都是 <code>struct</code>。</p>
+
+<h2 id="三-反射对象的字段">三、反射对象的字段</h2>
+
+<p>反射能够操作的字段和方法必须是可导出（首字母大写）的。</p>
+
+<p>反射对象的字段值修改要通过调用 <code>Value</code> 类型的方法 <code>Elem()</code> 后返回的 <code>Value</code> 对象值来操作。</p>
+
+<p><code>Elem()</code> 方法定义：<code>func (v Value) Elem() Value</code>，返回 <code>v</code> 包含的值或指针 <code>v</code> 指向的值，<code>v</code> 的 <code>Kind</code> 如果不是 <code>Interface</code> 或 <code>Ptr</code>，则会 panic。</p>
+
+<p><code>reflect.Indirect()</code> 函数的如果参数是指针的 <code>Value</code>，则相当于调用了 <code>Elem()</code> 方法返回的值，否则返回 <code>Value</code> 自身值。</p>
+
+<pre><code class="language-golang">// 修改反射对象的值
+i := 20
+fmt.Println(&quot;before i =&quot;, i)
+e := reflect.Indirect(reflect.ValueOf(&amp;i))
+// e := reflect.ValueOf(&amp;i).Elem()
+if e.CanSet() {
+    e.SetInt(22)
+}
+fmt.Println(&quot;after i =&quot;, i)
+
+
+// 反射字段操作
+// elem := reflect.Indirect(reflect.ValueOf(&amp;u))
+elem := reflect.ValueOf(&amp;u).Elem()
+for i := 0; i &lt; t.NumField(); i++ {
+    // 反射获取字段的元信息，例如：名称、Tag 等
+    ft := t.Field(i)
+    fmt.Println(&quot;field name:&quot;, ft.Name)
+    tag := ft.Tag
+    fmt.Println(&quot;Tag:&quot;, tag)
+    fmt.Println(&quot;Tag json:&quot;, tag.Get(&quot;json&quot;))
+
+    // 反射修改字段的值
+    fv := elem.Field(i)
+    if fv.CanSet() {
+        if fv.Kind() == reflect.Int {
+            fmt.Println(&quot;change age to 30&quot;)
+            fv.SetInt(30)
+        }
+        if fv.Kind() == reflect.String {
+            fmt.Println(&quot;change name to jerry&quot;)
+            fv.SetString(&quot;jerry&quot;)
+        }
+    }
+    fmt.Println()
+}
+fmt.Println(&quot;after user:&quot;, u)
+</code></pre>
+
+<h2 id="四-反射对象的方法">四、反射对象的方法</h2>
+
+<p>可以通过 <code>Value</code> 的 <code>Method()</code> 方法或 <code>Type</code> 的 <code>Method()</code> 方法，两种形式获取对象方法信息进行反射调用，略有不同，示例如下：</p>
+
+<pre><code class="language-golang">// 反射方法操作
+for i := 0; i &lt; v.NumMethod(); i++ {
+    method := t.Method(i) // 获取方法信息对象，方法 1
+    mt := method.Type     // 获取方法信息 Type 对象，方法 1
+
+    // m := v.Method(i) // 获取方法信息对象，方法 2
+    // mt := m.Type()   // 获取方法信息 Type 对象，方法 2
+
+    fmt.Println(&quot;method name:&quot;, method.Name)
+
+    in := []reflect.Value{}
+
+    // 获取方法入参类型
+    for j := 0; j &lt; mt.NumIn(); j++ {
+        fmt.Println(&quot;method in type:&quot;, mt.In(j))
+        if mt.In(j).Kind() == reflect.String {
+            in = append(in, reflect.ValueOf(&quot;welcome&quot;))
+        }
+        // 方法 1 获取的方法信息对象会把方法的接受者也当着入参之一
+        if mt.In(j).Name() == t.Name() {
+            in = append(in, v)
+        }
+    }
+
+    // 获取方法返回类型
+    for j := 0; j &lt; mt.NumOut(); j++ {
+        fmt.Println(&quot;method out type:&quot;, mt.Out(j))
+    }
+
+    // 反射方法调用
+    // out := m.Call(in) // 方法 1 获取的 Method 对象反射调用方式
+    out := method.Func.Call(in) // 方法 1 获取的 Method 对象反射调用方式
+    for _, o := range out {
+        fmt.Println(&quot;out:&quot;, o)
+    }
+}
+</code></pre>
+
+<h2 id="五-反射对象-value-还原">五、反射对象 Value 还原</h2>
+
+<p>通过 <code>reflect.ValueOf()</code> 可以把任意类型对象转换为 <code>Value</code> 类型对象，也可以通过 <code>Value</code> 类型的方法 <code>Interface()</code> 把 <code>Value</code> 类型对象还原为原始数据类型对象。</p>
+
+<pre><code class="language-golang">// Value 转原始类型
+if u1, ok := v.Interface().(User); ok {
+    fmt.Println(&quot;after:&quot;, u1.Name, u1.Age)
+}
+</code></pre>
+
+<!-- [1]: /images/post/golang-reflect.jpg -->
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2018/01/26/golang-reflect/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/golang/">Golang</a>
+          
+          <a href="/tags/go/">Go</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2018/03/10/drifter/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">漂 泊</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2018/01/12/kubernetes-minikube-installation/">
+            <span class="next-text nav-default">Kubernetes 学习笔记之 MiniKube 安装</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '16053caac99dc9a1d6450d3e500bc5db',
+        title: 'Golang 反射使用总结',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用Hexo基于GitHub Pages搭建个人博客（一） - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" GitHub Pages 是 GitHub 提供的免费开源的静态站点托管服务，利用这个服务可以搭建轻量级的博客系统，本文介绍了如何使用 Hexo 结合 GitHub Pages 服务搭建个人博客。
+ 一、安装配置 Git 1.1 安装 Git 使用 GitHub 首先要安装 Git，可根据操作系统下载不同版本的 Git，Windows 下载地址：https://git-scm.com/download/win 安装过程比较简单，选择默认选项配置即可下一步，不再叙述。
+1.2 配置 Git 设置本地机器默认 commit 的昵称与 Email，姓名与 Email 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。
+git config --global user.name &amp;quot;ehlxr&amp;quot; git config --global user.email &amp;quot;ehlxr@qq.com&amp;quot;  二、生成 SSH keys SSH Keys 是 GitHub 推荐的公钥、秘钥形式验证用户合法性的机制，添加 SSH Keys 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 SSH Keys 的公钥、秘钥。
+" />
+<meta name="keywords" content="Hexo,GitHub,Git" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2016/07/23/%E4%BD%BF%E7%94%A8hexo%E5%9F%BA%E4%BA%8Egithub-pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E4%B8%80/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="使用Hexo基于GitHub Pages搭建个人博客（一）" />
+<meta property="og:description" content="
+GitHub Pages 是 GitHub 提供的免费开源的静态站点托管服务，利用这个服务可以搭建轻量级的博客系统，本文介绍了如何使用 Hexo 结合 GitHub Pages 服务搭建个人博客。
+
+
+一、安装配置 Git
+
+1.1 安装 Git
+
+使用 GitHub 首先要安装 Git，可根据操作系统下载不同版本的 Git，Windows 下载地址：https://git-scm.com/download/win 安装过程比较简单，选择默认选项配置即可下一步，不再叙述。
+
+1.2 配置 Git
+
+设置本地机器默认 commit 的昵称与 Email，姓名与 Email 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。
+
+git config --global user.name &quot;ehlxr&quot;
+git config --global user.email &quot;ehlxr@qq.com&quot;
+
+
+二、生成 SSH keys
+
+SSH Keys 是 GitHub 推荐的公钥、秘钥形式验证用户合法性的机制，添加 SSH Keys 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 SSH Keys 的公钥、秘钥。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2016/07/23/%E4%BD%BF%E7%94%A8hexo%E5%9F%BA%E4%BA%8Egithub-pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E4%B8%80/" /><meta property="article:published_time" content="2016-07-23T11:35:43&#43;00:00"/>
+<meta property="article:modified_time" content="2016-07-23T11:35:43&#43;00:00"/>
+
+<meta itemprop="name" content="使用Hexo基于GitHub Pages搭建个人博客（一）">
+<meta itemprop="description" content="
+GitHub Pages 是 GitHub 提供的免费开源的静态站点托管服务，利用这个服务可以搭建轻量级的博客系统，本文介绍了如何使用 Hexo 结合 GitHub Pages 服务搭建个人博客。
+
+
+一、安装配置 Git
+
+1.1 安装 Git
+
+使用 GitHub 首先要安装 Git，可根据操作系统下载不同版本的 Git，Windows 下载地址：https://git-scm.com/download/win 安装过程比较简单，选择默认选项配置即可下一步，不再叙述。
+
+1.2 配置 Git
+
+设置本地机器默认 commit 的昵称与 Email，姓名与 Email 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。
+
+git config --global user.name &quot;ehlxr&quot;
+git config --global user.email &quot;ehlxr@qq.com&quot;
+
+
+二、生成 SSH keys
+
+SSH Keys 是 GitHub 推荐的公钥、秘钥形式验证用户合法性的机制，添加 SSH Keys 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 SSH Keys 的公钥、秘钥。">
+
+
+<meta itemprop="datePublished" content="2016-07-23T11:35:43&#43;00:00" />
+<meta itemprop="dateModified" content="2016-07-23T11:35:43&#43;00:00" />
+<meta itemprop="wordCount" content="1250">
+
+
+
+<meta itemprop="keywords" content="Hexo,GitHub,Git," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用Hexo基于GitHub Pages搭建个人博客（一）"/>
+<meta name="twitter:description" content="
+GitHub Pages 是 GitHub 提供的免费开源的静态站点托管服务，利用这个服务可以搭建轻量级的博客系统，本文介绍了如何使用 Hexo 结合 GitHub Pages 服务搭建个人博客。
+
+
+一、安装配置 Git
+
+1.1 安装 Git
+
+使用 GitHub 首先要安装 Git，可根据操作系统下载不同版本的 Git，Windows 下载地址：https://git-scm.com/download/win 安装过程比较简单，选择默认选项配置即可下一步，不再叙述。
+
+1.2 配置 Git
+
+设置本地机器默认 commit 的昵称与 Email，姓名与 Email 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。
+
+git config --global user.name &quot;ehlxr&quot;
+git config --global user.email &quot;ehlxr@qq.com&quot;
+
+
+二、生成 SSH keys
+
+SSH Keys 是 GitHub 推荐的公钥、秘钥形式验证用户合法性的机制，添加 SSH Keys 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 SSH Keys 的公钥、秘钥。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">使用Hexo基于GitHub Pages搭建个人博客（一）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2016-07-23 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/hexo/"> Hexo </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1250 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 3 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#一-安装配置-git">一、安装配置 <code>Git</code></a>
+<ul>
+<li><a href="#1-1-安装-git">1.1 安装 <code>Git</code></a></li>
+<li><a href="#1-2-配置-git">1.2 配置 <code>Git</code></a></li>
+</ul></li>
+<li><a href="#二-生成-ssh-keys">二、生成 <code>SSH keys</code></a>
+<ul>
+<li><a href="#2-1-首先打开安装的-git-bash">2.1 首先打开安装的 <code>Git Bash</code></a></li>
+<li><a href="#2-2-运行-ssh-keygen-命令">2.2 运行 <code>ssh-keygen</code> 命令</a></li>
+<li><a href="#2-3-保存秘钥文件">2.3 保存秘钥文件</a></li>
+</ul></li>
+<li><a href="#三-开启-github-pages-服务">三、开启 <code>GitHub Pages</code> 服务</a>
+<ul>
+<li><a href="#3-1-添加生成的-ssh-keys-到-github">3.1 添加生成的 <code>SSH Keys</code> 到 <code>GitHub</code></a></li>
+<li><a href="#3-2-创建-github-仓库">3.2 创建 <code>GitHub</code> 仓库</a></li>
+<li><a href="#3-3-测试-github-pages-服务">3.3 测试 <code>GitHub Pages</code> 服务</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p><code>GitHub Pages</code> 是 <code>GitHub</code> 提供的免费开源的静态站点托管服务，利用这个服务可以搭建轻量级的博客系统，本文介绍了如何使用 <code>Hexo</code> 结合 <code>GitHub Pages</code> 服务搭建个人博客。</p>
+</blockquote>
+
+<h1 id="一-安装配置-git">一、安装配置 <code>Git</code></h1>
+
+<h2 id="1-1-安装-git">1.1 安装 <code>Git</code></h2>
+
+<p>使用 <code>GitHub</code> 首先要安装 <code>Git</code>，可根据操作系统下载不同版本的 <code>Git</code>，<code>Windows</code> 下载地址：<a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a> 安装过程比较简单，选择默认选项配置即可下一步，不再叙述。</p>
+
+<h2 id="1-2-配置-git">1.2 配置 <code>Git</code></h2>
+
+<p>设置本地机器默认 <code>commit</code> 的昵称与 <code>Email</code>，姓名与 <code>Email</code> 只用于日志标识，实际推送到远程仓库时，要用有操作权限的账号登录。</p>
+
+<pre><code class="language-bash">git config --global user.name &quot;ehlxr&quot;
+git config --global user.email &quot;ehlxr@qq.com&quot;
+</code></pre>
+
+<h1 id="二-生成-ssh-keys">二、生成 <code>SSH keys</code></h1>
+
+<p><code>SSH Keys</code> 是 <code>GitHub</code> 推荐的公钥、秘钥形式验证用户合法性的机制，添加 <code>SSH Keys</code> 可以省去每次都要输入密码的步骤，下面将演示如何在本地计算机生成 <code>SSH Keys</code> 的公钥、秘钥。</p>
+
+<h2 id="2-1-首先打开安装的-git-bash">2.1 首先打开安装的 <code>Git Bash</code></h2>
+
+<p><img src="/images/post/20160723141920.png" alt="" /></p>
+
+<p><img src="/images/post/20160723142100.png" alt="" /></p>
+
+<h2 id="2-2-运行-ssh-keygen-命令">2.2 运行 <code>ssh-keygen</code> 命令</h2>
+
+<p>输入以下命令：（替换 <code>&quot;your_email@example.com&quot;</code> 为注册时候的邮箱）</p>
+
+<pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;
+</code></pre>
+
+<h2 id="2-3-保存秘钥文件">2.3 保存秘钥文件</h2>
+
+<p>当出现以下提示时，直接敲回车键选择默认地址即可（保存私钥文件位置，默认保存在当前用户文件夹下的 <code>.ssh</code> 文件夹中，文件名称为 <code>id_rsa</code> ）</p>
+
+<pre><code class="language-bash">Enter file in which to save the key (/c/Users/lt/.ssh/id_rsa):
+</code></pre>
+
+<p>如果已经存在会提示，输入：y 敲回车替换即可</p>
+
+<pre><code class="language-bash">/c/Users/lt/.ssh/id_rsa already exists.
+Overwrite (y/n)?
+</code></pre>
+
+<p>出现以下提示设置密码提示，不用设置密码，敲回车键即可</p>
+
+<pre><code class="language-bash">Enter passphrase (empty for no passphrase):
+</code></pre>
+
+<p>再次确认密码提示，不用设密码敲回车即可</p>
+
+<pre><code class="language-bash">Enter same passphrase again:
+</code></pre>
+
+<p>出现以下提示，表明已经成功生成了 <code>SSH Keys</code></p>
+
+<pre><code class="language-bash">Your identification has been saved in /c/Users/lt/.ssh/id_rsa.
+Your public key has been saved in /c/Users/lt/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:dBtq6OOJs1JQat630kGqh420Y0JSb7smaR6c9jjo7h0 your_email@example.com
+The key's randomart image is:
++---[RSA 4096]----+
+|                 |
+|    .            |
+|   o    . o      |
+|  =   .o o o     |
+| + + o. S .      |
+|.oo.*.o.         |
+|oo=E +oo         |
+|o.#+Oooo         |
+|+OoO==o          |
++----[SHA256]-----+
+</code></pre>
+
+<p><a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/">Github 官网 SSH Keys 生成教程</a></p>
+
+<h1 id="三-开启-github-pages-服务">三、开启 <code>GitHub Pages</code> 服务</h1>
+
+<p><code>GitHub</code> 账户注册比较简单，注册免费使用的账户就可以了，这里就不细说了，需要注意的是尽量不要使用 <code>126/163</code> 邮箱注册，我在测试的时候收不到验证码，等收到验证码的时候已经第二天了，早就过期了，我使用 <code>Gmail</code> 和 <code>QQ</code> 邮箱都能很快收到验证码。</p>
+
+<h2 id="3-1-添加生成的-ssh-keys-到-github">3.1 添加生成的 <code>SSH Keys</code> 到 <code>GitHub</code></h2>
+
+<p>打开生成的 <code>SSH Keys</code> 公钥</p>
+
+<p><img src="/images/post/20160723144829.png" alt="" /></p>
+
+<p>登录注册的 <code>GitHub</code> 账户，按照以下图示 <code>1</code>、<code>2</code>、<code>3</code>、<code>4</code>、<code>5</code>、<code>6</code>、<code>7</code> 步骤操作，复制公钥内容粘贴到下图 <code>步骤 5</code> 的 <code>Key</code> 输入框中，在 <code>步骤 6</code> 输入一个标题，点击 <code>步骤 7</code> 的 <code>Add SSH key</code> 按钮，这时候会提示你输入 <code>GitHub</code> 账号密码，输入密码确认即可添加成功。</p>
+
+<p><img src="/images/post/20160723142019.png" alt="" /></p>
+
+<p><img src="/images/post/20160723142036.png" alt="" /></p>
+
+<h2 id="3-2-创建-github-仓库">3.2 创建 <code>GitHub</code> 仓库</h2>
+
+<p>按照下图所示操作，仓库名称按照：<code>yourname.github.io</code> 格式创建，这样就可以通过 <code>yourname.github.io</code> 方式访问你的博客。如果创建名称为：<code>myblog</code> ,则博客的访问路径为 <code>yourname.github.io/myblog</code></p>
+
+<p><img src="/images/post/20160723165328.png" alt="" /></p>
+
+<p><img src="/images/post/20160723171101.png" alt="" /></p>
+
+<p>填写完仓库名称，其他选项默认，点击 <code>Create repository</code> 即可完成创建。</p>
+
+<h2 id="3-3-测试-github-pages-服务">3.3 测试 <code>GitHub Pages</code> 服务</h2>
+
+<p>接下来在仓库根目录下创建一个 <code>index.html</code> 文件测试 <code>GitHub Pages</code> 服务是否开启成功。打开刚才创建的仓库，因为我们之前已经添加了 <code>SSH Keys</code>，所以选择复制如下图所示的 <code>SSH</code> 仓库连接</p>
+
+<p><img src="/images/post/20160723190223.png" alt="" /></p>
+
+<p>在电脑磁盘创建一个文件夹（我创建在：<code>D:/lxr</code>）在 <code>Git Bash</code> 分别输入以下两条命令：</p>
+
+<pre><code class="language-bash">cd /d/lxr/ # 进入创建的文件夹
+
+git init # 初始化本地仓库
+</code></pre>
+
+<p>在本地文件夹中创建 <code>index.html</code> 文件，随便输入一些内容即可，命令如下：</p>
+
+<pre><code class="language-bash">echo &quot;&lt;h1&gt;Hello World&lt;/h1&gt;&quot; &gt;&gt; index.html # 创建 index.html 文件
+</code></pre>
+
+<p>然后分别执行以下命令：</p>
+
+<pre><code class="language-bash">git add index.html # 添加文件
+git commit -m &quot;create index.html&quot; # 提交文件
+git remote add origin git@github.com:ehlxr/ehlxr.github.io.git # 添加 GitHub 仓库地址，注意地址填写自己注册的 GitHub 仓库地址
+git push -u origin master # push 到 GitHub
+</code></pre>
+
+<p>浏览器访问：<a href="http://ehlxr.github.io">yourname.github.io</a> 如果出现 <code>index.html</code> 输入的内容，即 <code>GitHub Pages</code> 服务开启成功</p>
+
+<hr />
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2016/07/23/%E4%BD%BF%E7%94%A8hexo%E5%9F%BA%E4%BA%8Egithub-pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E4%B8%80/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/hexo/">Hexo</a>
+          
+          <a href="/tags/github/">GitHub</a>
+          
+          <a href="/tags/git/">Git</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2016/07/23/%E4%BD%BF%E7%94%A8hexo%E5%9F%BA%E4%BA%8Egithub-pages%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E4%BA%8C/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">使用Hexo基于GitHub Pages搭建个人博客（二）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2016/07/21/%E8%BD%AC-jms-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">
+            <span class="next-text nav-default">[转] JMS 基本概念</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '4f3820bc2b752c1b086f3e1854b50488',
+        title: '使用Hexo基于GitHub Pages搭建个人博客（一）',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

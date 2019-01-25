@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://ehlxr.cf/sitemap.xml

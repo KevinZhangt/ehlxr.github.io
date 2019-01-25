@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Docker 学习笔记 - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content="一、CentOS 系统安装 参考《Docker — 从入门到实践》 之 &amp;ldquo;CentOS 操作系统安装 Docker&amp;rdquo;
+1.1 系统要求 Docker 最低支持 CentOS 7。
+Docker 需要安装在 64 位的平台，并且内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 overlay2 存储层驱动）无法使用，并且部分功能可能不太稳定。
+参考升级CentOS 升级 kernel
+1.2 使用脚本自动安装 Docker 官方为了简化安装流程，提供了一套安装脚本，CentOS 系统上可以使用这套脚本安装：
+" />
+<meta name="keywords" content="Docker" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2016/11/03/docker-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Docker 学习笔记" />
+<meta property="og:description" content="
+
+一、CentOS 系统安装
+
+参考《Docker — 从入门到实践》 之 &ldquo;CentOS 操作系统安装 Docker&rdquo;
+
+1.1 系统要求
+
+Docker 最低支持 CentOS 7。
+
+Docker 需要安装在 64 位的平台，并且内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 overlay2 存储层驱动）无法使用，并且部分功能可能不太稳定。
+
+参考升级CentOS 升级 kernel
+
+1.2 使用脚本自动安装
+
+Docker 官方为了简化安装流程，提供了一套安装脚本，CentOS 系统上可以使用这套脚本安装：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2016/11/03/docker-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" /><meta property="article:published_time" content="2016-11-03T15:46:19&#43;00:00"/>
+<meta property="article:modified_time" content="2016-11-03T15:46:19&#43;00:00"/>
+
+<meta itemprop="name" content="Docker 学习笔记">
+<meta itemprop="description" content="
+
+一、CentOS 系统安装
+
+参考《Docker — 从入门到实践》 之 &ldquo;CentOS 操作系统安装 Docker&rdquo;
+
+1.1 系统要求
+
+Docker 最低支持 CentOS 7。
+
+Docker 需要安装在 64 位的平台，并且内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 overlay2 存储层驱动）无法使用，并且部分功能可能不太稳定。
+
+参考升级CentOS 升级 kernel
+
+1.2 使用脚本自动安装
+
+Docker 官方为了简化安装流程，提供了一套安装脚本，CentOS 系统上可以使用这套脚本安装：">
+
+
+<meta itemprop="datePublished" content="2016-11-03T15:46:19&#43;00:00" />
+<meta itemprop="dateModified" content="2016-11-03T15:46:19&#43;00:00" />
+<meta itemprop="wordCount" content="3127">
+
+
+
+<meta itemprop="keywords" content="Docker," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker 学习笔记"/>
+<meta name="twitter:description" content="
+
+一、CentOS 系统安装
+
+参考《Docker — 从入门到实践》 之 &ldquo;CentOS 操作系统安装 Docker&rdquo;
+
+1.1 系统要求
+
+Docker 最低支持 CentOS 7。
+
+Docker 需要安装在 64 位的平台，并且内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 overlay2 存储层驱动）无法使用，并且部分功能可能不太稳定。
+
+参考升级CentOS 升级 kernel
+
+1.2 使用脚本自动安装
+
+Docker 官方为了简化安装流程，提供了一套安装脚本，CentOS 系统上可以使用这套脚本安装："/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Docker 学习笔记</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2016-11-03 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/docker/"> Docker </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 3127 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 7 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#一-centos-系统安装">一、CentOS 系统安装</a>
+<ul>
+<li><a href="#1-1-系统要求">1.1 系统要求</a></li>
+<li><a href="#1-2-使用脚本自动安装">1.2 使用脚本自动安装</a>
+<ul>
+<li><a href="#1-2-1-阿里云的安装脚本">1.2.1 阿里云的安装脚本</a></li>
+<li><a href="#1-2-2-daocloud-的安装脚本">1.2.2 DaoCloud 的安装脚本</a></li>
+</ul></li>
+<li><a href="#1-3-手动安装">1.3 手动安装</a>
+<ul>
+<li><a href="#1-3-1-添加内核参数">1.3.1 添加内核参数</a></li>
+<li><a href="#1-3-2-添加-yum-源">1.3.2 添加 yum 源</a></li>
+<li><a href="#1-3-3-安装-docker">1.3.3 安装 Docker</a></li>
+<li><a href="#1-3-4-启动-docker-引擎">1.3.4 启动 Docker 引擎</a></li>
+<li><a href="#1-3-5-建立-docker-用户组">1.3.5 建立 docker 用户组</a></li>
+</ul></li>
+<li><a href="#1-4-参考文档">1.4 参考文档</a></li>
+</ul></li>
+<li><a href="#二-基本概念">二、基本概念</a>
+<ul>
+<li><a href="#2-1-docker-images">2.1 Docker images</a></li>
+<li><a href="#2-2-docker-registries">2.2 Docker Registries</a></li>
+<li><a href="#2-3-docker-containers">2.3 Docker containers</a></li>
+</ul></li>
+<li><a href="#三-常用命令">三、常用命令</a>
+<ul>
+<li><a href="#3-1-镜像操作">3.1 镜像操作</a></li>
+<li><a href="#3-2-创建容器">3.2 创建容器</a></li>
+<li><a href="#3-3-容器操作">3.3 容器操作</a></li>
+<li><a href="#3-3-进入容器">3.3 进入容器</a></li>
+</ul></li>
+<li><a href="#四-docker-私有仓库">四、Docker 私有仓库</a>
+<ul>
+<li><a href="#4-1-搭建-docker-私有仓库">4.1 搭建 Docker 私有仓库</a></li>
+<li><a href="#4-2-测试使用私有仓库">4.2 测试使用私有仓库</a></li>
+</ul></li>
+<li><a href="#五-dockerfile">五、Dockerfile</a>
+<ul>
+<li><a href="#5-1-什么是dockerfile">5.1 什么是Dockerfile？</a></li>
+<li><a href="#5-2-dockerfile-介绍">5.2 Dockerfile 介绍</a></li>
+<li><a href="#5-3-生成-docker-镜像">5.3 生成 docker 镜像</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <p><img src="/images/post/20161103001.png" alt="Docker" /></p>
+
+<h1 id="一-centos-系统安装">一、CentOS 系统安装</h1>
+
+<p>参考《Docker — 从入门到实践》 之 <a href="https://github.com/yeasy/docker_practice/blob/master/install/centos.md">&ldquo;CentOS 操作系统安装 Docker&rdquo;</a></p>
+
+<h2 id="1-1-系统要求">1.1 系统要求</h2>
+
+<p>Docker 最低支持 CentOS 7。</p>
+
+<p>Docker 需要安装在 64 位的平台，并且内核版本不低于 3.10。 CentOS 7 满足最低内核的要求，但由于内核版本比较低，部分功能（如 <code>overlay2</code> 存储层驱动）无法使用，并且部分功能可能不太稳定。</p>
+
+<p>参考升级<a href="http://ehlxr.me/2017/01/10/%E8%BD%AC-CentOS-%E5%8D%87%E7%BA%A7-kernel/">CentOS 升级 kernel</a></p>
+
+<h2 id="1-2-使用脚本自动安装">1.2 使用脚本自动安装</h2>
+
+<p>Docker 官方为了简化安装流程，提供了一套安装脚本，CentOS 系统上可以使用这套脚本安装：</p>
+
+<pre><code class="language-bash">curl -sSL https://get.docker.com/ | sh
+</code></pre>
+
+<p>执行这个命令后，脚本就会自动的将一切准备工作做好，并且把 Docker 安装在系统中。</p>
+
+<p>不过，由于伟大的墙的原因，在国内使用这个脚本可能会出现某些下载出现错误的情况。国内的一些云服务商提供了这个脚本的修改版本，使其使用国内的 Docker 软件源镜像安装，这样就避免了墙的干扰。</p>
+
+<h3 id="1-2-1-阿里云的安装脚本">1.2.1 阿里云的安装脚本</h3>
+
+<pre><code class="language-bash">curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -
+</code></pre>
+
+<h3 id="1-2-2-daocloud-的安装脚本">1.2.2 DaoCloud 的安装脚本</h3>
+
+<pre><code class="language-bash">curl -sSL https://get.daocloud.io/docker | sh
+</code></pre>
+
+<h2 id="1-3-手动安装">1.3 手动安装</h2>
+
+<h3 id="1-3-1-添加内核参数">1.3.1 添加内核参数</h3>
+
+<p>默认配置下，在 CentOS 使用 Docker 可能会碰到下面的这些警告信息：</p>
+
+<pre><code class="language-bash">WARNING: bridge-nf-call-iptables is disabled
+WARNING: bridge-nf-call-ip6tables is disabled
+</code></pre>
+
+<p>添加内核配置参数以启用这些功能。</p>
+
+<pre><code class="language-bash">$ sudo tee -a /etc/sysctl.conf &lt;&lt;-EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+</code></pre>
+
+<p>然后重新加载 <code>sysctl.conf</code> 即可</p>
+
+<pre><code class="language-bash">$ sudo sysctl -p
+</code></pre>
+
+<h3 id="1-3-2-添加-yum-源">1.3.2 添加 yum 源</h3>
+
+<p>虽然 CentOS 软件源 <code>Extras</code> 中有 Docker，名为 <code>docker</code>，但是不建议使用系统源中的这个版本，它的版本相对比较陈旧，而且并非 Docker 官方维护的版本。因此，我们需要使用 Docker 官方提供的 CentOS 软件源。</p>
+
+<p>执行下面的命令添加 <code>yum</code> 软件源。</p>
+
+<pre><code class="language-bash">$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+</code></pre>
+
+<h3 id="1-3-3-安装-docker">1.3.3 安装 Docker</h3>
+
+<p>更新 <code>yum</code> 软件源缓存，并安装 <code>docker-engine</code>。</p>
+
+<pre><code class="language-bash">$ sudo yum update
+$ sudo yum install docker-engine
+</code></pre>
+
+<h3 id="1-3-4-启动-docker-引擎">1.3.4 启动 Docker 引擎</h3>
+
+<pre><code class="language-bash">$ sudo systemctl enable docker
+$ sudo systemctl start docker
+</code></pre>
+
+<h3 id="1-3-5-建立-docker-用户组">1.3.5 建立 docker 用户组</h3>
+
+<p>默认情况下，<code>docker</code> 命令会使用 <a href="https://en.wikipedia.org/wiki/Unix_domain_socket">Unix socket</a> 与 Docker 引擎通讯。而只有 <code>root</code> 用户和 <code>docker</code> 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 <code>root</code> 用户。因此，更好地做法是将需要使用 <code>docker</code> 的用户加入 <code>docker</code> 用户组。</p>
+
+<p>建立 <code>docker</code> 组：</p>
+
+<pre><code class="language-bash">$ sudo groupadd docker
+</code></pre>
+
+<p>将当前用户加入 <code>docker</code> 组：</p>
+
+<pre><code class="language-bash">$ sudo usermod -aG docker $USER
+</code></pre>
+
+<h2 id="1-4-参考文档">1.4 参考文档</h2>
+
+<p>参见 <a href="https://docs.docker.com/engine/installation/linux/centos/">Docker 官方 CentOS 安装文档</a>。</p>
+
+<h1 id="二-基本概念">二、基本概念</h1>
+
+<h2 id="2-1-docker-images">2.1 Docker images</h2>
+
+<p>Docker image 是一个只读类型的模板。比如一个镜像可以是一个包含 apache 和你的 web 应用的 ubuntu 操作系统。我们经常使用镜像来创建容器。Docker 提供了一种快捷的方式来构建新镜像或者更新镜像，同时你也可以下载其他人已经创建好的镜像。Docker image 是 Docker 结构中的构建组件。</p>
+
+<h2 id="2-2-docker-registries">2.2 Docker Registries</h2>
+
+<p>Docker registries 用来保存镜像。它分为公开仓库和私有仓库，你可以从仓库中上传或者下载镜像。公开的 Docker 仓库称之为 <a href="https://hub.docker.com/">Docker Hub</a>。它提供了你可以使用的非常多的镜像。你可以自由的创建镜像或者使用这里面其他人已经创建好的镜像。Docker registries 属于 Docker 中的分发组件。</p>
+
+<h2 id="2-3-docker-containers">2.3 Docker containers</h2>
+
+<p>Docker containers 同目录有几分相似。Docker containers 保存了执行应用所需的所有资源。每一个 Docker containers 都是由 image 创建的。Docker containers 可以 run, start, stop, restart, rm。需要注意的是，Docker containers 之间是隔离的。Docker containers 属于 Docker 中的执行组件。</p>
+
+<h1 id="三-常用命令">三、常用命令</h1>
+
+<h2 id="3-1-镜像操作">3.1 镜像操作</h2>
+
+<ul>
+<li>拉取镜像：<code>docker pull nginx:latest</code></li>
+<li>查看镜像列表：<code>docker images</code></li>
+<li>删除镜像：<code>docker rmi &lt;image id&gt;</code></li>
+<li>想要删除 untagged images（也就是那些 id 为 None 的镜像）：<code>docker rmi $(docker images | grep &quot;^&lt;none&gt;&quot; | awk '{print $3}')</code></li>
+<li>删除全部镜像：<code>docker rmi $(docker images -q)</code></li>
+</ul>
+
+<h2 id="3-2-创建容器">3.2 创建容器</h2>
+
+<p>创建一个容器并运行，例如：</p>
+
+<pre><code class="language-stylus">docker run --name blog --privileged=true -v /home/Hexo/public:/usr/share/nginx/html:ro -d -p 80:80 docker.io/nginx
+</code></pre>
+
+<ul>
+<li><code>--name</code>：容器名称</li>
+<li><code>--privileged=true</code>：设置权限</li>
+<li><code>-v</code>：挂载本地磁盘目录，格式为本地磁盘绝对路径:容器路径
+&gt; 保证删除容器后，数据不被删除</li>
+<li><code>:ro</code>：只读</li>
+<li><code>-d</code>：后台模式</li>
+<li><code>i</code>：交互式操作</li>
+<li><code>t</code>：终端</li>
+<li><code>-p</code>：设置宿主计算机和容器端口映射</li>
+</ul>
+
+<blockquote>
+<p>在Dockerfile 中有一条指令是 EXPOSE 22，如果使用 <code>-P</code>，宿主机会随机选择一个 <code>没有被使用的端口</code> 和 docker <code>容器的 22 端口</code> 做 <code>端口映射</code>，如果 docker 主机或者容器重启后，宿主机又会随机选择一个没有被使用的端口和 docker 容器的 22 端口做端口映射，这样端口会发生 <code>变化</code></p>
+
+<p>如果使用 <code>-p</code>，比如 <code>2222:22</code>，这样不管是 docker 主机或者容器重启后，2222:22 端口都是这样来映射，<code>不会发生改变</code></p>
+</blockquote>
+
+<h2 id="3-3-容器操作">3.3 容器操作</h2>
+
+<ul>
+<li>启动：<code>docker start blog</code></li>
+<li>停止：<code>docker stop blog</code>；停止所有容器：<code>docker stop $(docker ps -a -q)</code></li>
+<li>删除：<code>docker rm blog</code>；删除所有容器：<code>docker rm $(docker ps -a -q)</code></li>
+<li>查看：<code>docker ps -a</code>（查看所有容器，包括已启动的和未启动的）</li>
+</ul>
+
+<h2 id="3-3-进入容器">3.3 进入容器</h2>
+
+<pre><code class="language-mel">sudo docker exec -it blog /bin/bash
+</code></pre>
+
+<h1 id="四-docker-私有仓库">四、Docker 私有仓库</h1>
+
+<p>Docker 提供了一个中央仓库，同时也允许我们使用 registry 搭建本地私有仓库。</p>
+
+<h2 id="4-1-搭建-docker-私有仓库">4.1 搭建 Docker 私有仓库</h2>
+
+<p>首先拉取 registry 镜像</p>
+
+<pre><code class="language-bash">docker pull registry
+</code></pre>
+
+<p>创建 register 容器并运行</p>
+
+<pre><code class="language-bash">docker run --name registry -d -p 5000:5000 --privileged=true -v /opt/registry:/var/lib/registry/ registry
+</code></pre>
+
+<p>挂载容器中存放镜像的目录到本地 <code>/opt/registry</code>，需要注意的一点是，容器中存放镜像的目录 registry 官方镜像示例中使用的是 <code>/tmp/registry-dev</code> ，但实验证明在版本 <code>2.5.0</code> 中，目录是 <code>/var/lib/registry/</code>。</p>
+
+<p>CentOS 系统挂载目录需要加上 <code>--privileged=true</code> 解决挂载的目录没有权限的问题。</p>
+
+<p>打开浏览器输入 register 容器宿主计算机地址加端口（如：<a href="http://192.168.237.128:5000/v2/">http://192.168.237.128:5000/v2/</a> ），如果出现 <code>{}</code>，即表明 register 容器运行成功。</p>
+
+<h2 id="4-2-测试使用私有仓库">4.2 测试使用私有仓库</h2>
+
+<p>首先给需要 push 到仓库的 images 打 TAG，前面需要带上私有仓库的地址。</p>
+
+<pre><code class="language-bash">$ docker tag docker.io/registry:latest 192.168.237.128:5000/registry:2.5.0
+</code></pre>
+
+<p>push 到私有仓库</p>
+
+<pre><code class="language-bash">$ docker push 192.168.237.128:5000/registry:2.5.0
+</code></pre>
+
+<p>通过以下命令删除镜像 <code>192.168.237.128:5000/registry:2.5.0</code>：</p>
+
+<pre><code class="language-bash">$ docker rmi 192.168.237.128:5000/registry:2.5.0
+</code></pre>
+
+<p>然后通过以下命令即可拉取私有仓库的镜像：</p>
+
+<pre><code class="language-bash">$ docker pull 192.168.237.128:5000/hexo:latest
+</code></pre>
+
+<p>如果 docker push 的时候出现以下错误信息：</p>
+
+<pre><code class="language-bash">$ docker push 192.168.237.128:5000/registry:2.5.0
+The push refers to a repository [192.168.237.128:5000/registry]
+unable to ping registry endpoint https://192.168.237.128:5000/v0/
+v2 ping attempt failed with error: Get https://192.168.237.128:5000/v2/: http: server gave HTTP response to HTTPS client
+ v1 ping attempt failed with error: Get https://192.168.237.128:5000/v1/_ping: http: server gave HTTP response to HTTPS client
+</code></pre>
+
+<p>修改文件 <code>/etc/sysconfig/docker</code> 添加以下代码，然后重启 docker 服务即可重新 push。</p>
+
+<pre><code class="language-bash">ADD_REGISTRY='--add-registry 192.168.237.128:5000'
+
+INSECURE_REGISTRY='--insecure-registry 192.168.237.128:5000'
+</code></pre>
+
+<h1 id="五-dockerfile">五、Dockerfile</h1>
+
+<h2 id="5-1-什么是dockerfile">5.1 什么是Dockerfile？</h2>
+
+<blockquote>
+<p>Dockerfile 是自动构建 docker 镜像的配置文件，Dockerfile 中的命令非常类似 linux shell 下的命令
+Dockerfile，可以让用户自定义构建 docker 镜像，支持以 # 开头的注释行</p>
+</blockquote>
+
+<p>一般，Dockerfile分为4部分
+- 基础镜像（父镜像）信息
+- 维护者信息
+- 镜像操作命令
+- 容器启动命令</p>
+
+<h2 id="5-2-dockerfile-介绍">5.2 Dockerfile 介绍</h2>
+
+<p><code>FROM       centos:centos7.1.1503</code>
+&gt; 基于 <strong>父镜像</strong> 构建其他 docker 镜像，_父镜像_：可以通过 docker pull 命令获得，也可以自己制作</p>
+
+<p><code>MAINTAINER Carson,C.J.Zeong &lt;zcy@nicescale.com&gt;</code>
+&gt; Dockerfile 维护者</p>
+
+<p><code>ENV TZ &quot;Asia/Shanghai&quot;</code>
+&gt; ENV（environment）设置环境变量，一个 Dockerfile 中可以写多个。以上例子是：设置 docker 容器的时区为 Shanghai</p>
+
+<p><strong>Dockerfile 中有 2 条指令可以拷贝文件</strong></p>
+
+<p><code>ADD aliyun-mirror.repo /etc/yum.repos.d/CentOS-Base.repo</code>
+&gt; 拷贝本地文件到 docker 容器里，还可以拷贝 URL 链接地址下的文件，ADD 还具有解压软件包的功能（支持 gzip, bzip2 or xz）</p>
+
+<p><code>COPY test /mydir</code>
+&gt; 拷贝本地文件到 docker 容器</p>
+
+<p><code>RUN yum install -y curl wget....</code>
+&gt; RUN 命令，非常类似 Linux 下的 shell 命令 <code>(the command is run in a shell - /bin/sh -c - shell form)</code>
+&gt; 在 Dockerfile 中每执行一条指令（ENV、ADD、RUN等命令），都会生成一个 docker image layer</p>
+
+<p><code>ADD supervisord.conf /etc/supervisord.conf</code>
+&gt; 添加 supervisor 的主配置文件，到 docker 容器里</p>
+
+<p><code>EXPOSE 22</code>
+&gt; 端口映射 <code>EXPOSE &lt;host_port&gt;:&lt;container_port&gt;</code>
+&gt; 推荐使用 <code>docker run -p &lt;host_port&gt;:&lt;container_port&gt;</code> 来固化端口</p>
+
+<p><code>ENTRYPOINT [&quot;/usr/bin/supervisord&quot;, &quot;-n&quot;, &quot;-c&quot;, &quot;/etc/supervisord.conf&quot;]</code>
+&gt; 一个 Dockerfile 中只有最后一条 <code>ENTRYPOINT</code> 生效，并且每次启动 docker 容器，都会执行 <code>ENTRYPOINT</code></p>
+
+<p><code>ONBUILD ADD . /app</code>
+&gt; <code>ONBUILD</code> 在生成当前docker镜像的时候不生效，在子镜像生效；<code>ONBUILD</code>在产品发布时起着非常重要的作用！举例
+&gt; A镜像中有<code>ONBUILD</code>指令，在构建A镜像时<code>ONBUILD</code>指令不执行；B镜像<code>FROM A</code>,在构建B镜像时<code>ONBUILD</code>指令开始执行；</p>
+
+<p><code>VOLUME [&quot;/var/lib/mysql&quot;]</code>
+&gt; 指定 docker 容器和宿主机做映射的文件目录</p>
+
+<h2 id="5-3-生成-docker-镜像">5.3 生成 docker 镜像</h2>
+
+<p>以上文件就是用来生成第一个 docker 镜像的 Dockerfile，通过 <code>docker build</code> 指令来生成 docker 镜像</p>
+
+<p><code>docker build -t csphere/centos:7.1 .</code>
+&gt; 如果 Dockerfile 在当前目录下，输入点 <code>.</code> 就可以进行加载当前目录下的 <code>Dockerfile</code>
+&gt; 如果不在当前目录下需要运行 <code>docker build -t csphere/centos:7.1 &lt;Dockerfile_dir&gt;</code> 加载相对路径下的 <code>Dockerfile</code></p>
+
+<p>docker 镜像的命名规则 <code>registry_url/namespace/image_name:tag</code> 默认 <code>tag</code> 是 <code>latest</code></p>
+
+<blockquote>
+<p>在构建 Docker 镜像时，如果有自己内部的 yum 源，替换成自己内部的 yum 地址，可以加快构建速度。
+如果第一次构建失败，会有部分镜像 layer 生成，第二次构建会基于第一次构建所生成的 layer（use cache），继续构建</p>
+</blockquote>
+
+<pre><code class="language-bash">Step 10 : EXPOSE 22
+ ---&gt; Running in 0ed1c5479ebc
+ ---&gt; c57a5bac41c8
+Removing intermediate container 0ed1c5479ebc
+Step 11 : ENTRYPOINT /usr/bin/supervisord -n -c /etc/supervisord.conf
+ ---&gt; Running in e16c7ac2fd45
+ ---&gt; 185ef7b101a8
+Removing intermediate container e16c7ac2fd45
+Successfully built 185ef7b101a8
+</code></pre>
+
+<p>可以看到每执行一条 <code>Dockerfile</code> 的指令都会生成一个镜像的 layer <code>c57a5bac41c8</code> <code>185ef7b101a8</code> 最后 <code>185ef7b101a8</code> 这个是 docker 镜像的ID，<code>185ef7b101a8</code> 是由 <code>c57a5bac41c8</code> <code>185ef7b101a8</code>&hellip;layers 叠加而成，体现了 docker 镜像是分层的</p>
+
+<hr />
+
+<div style="color: #f00;">未完待续...</div>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2016/11/03/docker-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/docker/">Docker</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2016/11/07/%E8%BD%AC-git-%E7%89%88%E6%9C%AC%E5%9B%9E%E6%BB%9A/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[转] Git 版本回滚</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2016/11/02/%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8-daocloud-%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA-hexo/">
+            <span class="next-text nav-default">测试使用 daocloud 持续构建 Hexo</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '3e409a5b7c00011c566df331d2c96795',
+        title: 'Docker 学习笔记',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

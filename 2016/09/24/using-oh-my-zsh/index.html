@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Oh My Zsh 替换你的 Bash Shell - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" Oh-My-Zsh is an open source, community-driven framework for managing your ZSH configuration. It comes bundled with a ton of helpful functions, helpers, plugins, themes, and a few things that make you shout&amp;hellip;
+[Oh My ZSH!][1]  1. Oh My Zsh 简介 无意中看见了 Linux 的一款 Shell，相比于 Bash 极其美艳，决定入坑试水一下，不试不知道，一试绝对有惊喜，不仅外观美艳而且功能强大，那还有不替换 Bash 的理由吗？搞起搞起&amp;hellip;&amp;hellip;
+" />
+<meta name="keywords" content="zsh,Shell,Linux,Bash" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2016/09/24/using-oh-my-zsh/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="Oh My Zsh 替换你的 Bash Shell" />
+<meta property="og:description" content="
+Oh-My-Zsh is an open source, community-driven framework for managing your ZSH configuration. It comes bundled with a ton of helpful functions, helpers, plugins, themes, and a few things that make you shout&hellip;
+
+[Oh My ZSH!][1]
+
+
+
+
+
+1. Oh My Zsh 简介
+
+无意中看见了 Linux 的一款 Shell，相比于 Bash 极其美艳，决定入坑试水一下，不试不知道，一试绝对有惊喜，不仅外观美艳而且功能强大，那还有不替换 Bash 的理由吗？搞起搞起&hellip;&hellip;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2016/09/24/using-oh-my-zsh/" /><meta property="article:published_time" content="2016-09-24T12:31:21&#43;00:00"/>
+<meta property="article:modified_time" content="2016-09-24T12:31:21&#43;00:00"/>
+
+<meta itemprop="name" content="Oh My Zsh 替换你的 Bash Shell">
+<meta itemprop="description" content="
+Oh-My-Zsh is an open source, community-driven framework for managing your ZSH configuration. It comes bundled with a ton of helpful functions, helpers, plugins, themes, and a few things that make you shout&hellip;
+
+[Oh My ZSH!][1]
+
+
+
+
+
+1. Oh My Zsh 简介
+
+无意中看见了 Linux 的一款 Shell，相比于 Bash 极其美艳，决定入坑试水一下，不试不知道，一试绝对有惊喜，不仅外观美艳而且功能强大，那还有不替换 Bash 的理由吗？搞起搞起&hellip;&hellip;">
+
+
+<meta itemprop="datePublished" content="2016-09-24T12:31:21&#43;00:00" />
+<meta itemprop="dateModified" content="2016-09-24T12:31:21&#43;00:00" />
+<meta itemprop="wordCount" content="1863">
+
+
+
+<meta itemprop="keywords" content="Linux,Zsh,Shell," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Oh My Zsh 替换你的 Bash Shell"/>
+<meta name="twitter:description" content="
+Oh-My-Zsh is an open source, community-driven framework for managing your ZSH configuration. It comes bundled with a ton of helpful functions, helpers, plugins, themes, and a few things that make you shout&hellip;
+
+[Oh My ZSH!][1]
+
+
+
+
+
+1. Oh My Zsh 简介
+
+无意中看见了 Linux 的一款 Shell，相比于 Bash 极其美艳，决定入坑试水一下，不试不知道，一试绝对有惊喜，不仅外观美艳而且功能强大，那还有不替换 Bash 的理由吗？搞起搞起&hellip;&hellip;"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">Oh My Zsh 替换你的 Bash Shell</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2016-09-24 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/linux/"> Linux </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1863 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 4 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#1-oh-my-zsh-简介">1. Oh My Zsh 简介</a></li>
+<li><a href="#2-安装">2. 安装</a>
+<ul>
+<li><a href="#2-1-git-和-zsh-安装">2.1 git 和 zsh 安装</a></li>
+<li><a href="#2-2-oh-my-zsh-安装">2.2 Oh My Zsh 安装</a></li>
+</ul></li>
+<li><a href="#3-配置使用">3. 配置使用</a>
+<ul>
+<li><a href="#3-1-切换-shell">3.1 切换 Shell</a></li>
+<li><a href="#3-2-更改主题">3.2 更改主题</a></li>
+<li><a href="#3-3-其它-linux-用户配置使用">3.3 其它 Linux 用户配置使用</a></li>
+</ul></li>
+<li><a href="#4-插件配置">4. 插件配置</a></li>
+<li><a href="#5-常用命令简介">5. 常用命令简介</a></li>
+<li><a href="#6-常用插件">6. 常用插件</a>
+<ul>
+<li><a href="#6-1-git-插件">6.1 git 插件</a></li>
+<li><a href="#6-2-wd-插件">6.2 wd 插件</a></li>
+<li><a href="#6-3-autojump-插件">6.3 autojump 插件</a></li>
+<li><a href="#6-4-sublime插件">6.4 sublime插件</a></li>
+<li><a href="#6-5-sudo-插件">6.5 sudo 插件</a></li>
+<li><a href="#6-6-zsh-autosuggestions-插件">6.6 zsh-autosuggestions 插件</a></li>
+<li><a href="#6-7-zsh-syntax-highlighting-插件">6.7 zsh-syntax-highlighting 插件</a></li>
+<li><a href="#6-8-extract-插件">6.8 extract 插件</a></li>
+<li><a href="#6-9-history-substring-search-插件">6.9 history-substring-search 插件</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p>Oh-My-Zsh is an open source, community-driven framework for managing your ZSH configuration. It comes bundled with a ton of helpful functions, helpers, plugins, themes, and a few things that make you shout&hellip;</p>
+
+<blockquote class='blockquote-center'>[Oh My ZSH!][1]</blockquote>
+</blockquote>
+
+<p><img src="https://ws2.sinaimg.cn/large/687148dbly1focma5ect2j209d05s3yl.jpg" alt="Oh My Zsh" />
+<!-- {% img /images/post/OMZLogo_BnW.png 200 'Oh My Zsh'%} --></p>
+
+<h1 id="1-oh-my-zsh-简介">1. Oh My Zsh 简介</h1>
+
+<p>无意中看见了 Linux 的一款 Shell，相比于 Bash 极其美艳，决定入坑试水一下，不试不知道，一试绝对有惊喜，不仅外观美艳而且功能强大，那还有不替换 Bash 的理由吗？搞起搞起&hellip;&hellip;</p>
+
+<p>Linux 提供了很多种 Shell ，想要查看系统有安装哪些 Shell 可以通过命令：<code>chsh -l</code> 或者 <code>cat /etc/shells</code> 进行查看。</p>
+
+<pre><code class="language-bash">$ cat /etc/shells
+/bin/sh
+/bin/bash
+/sbin/nologin
+/usr/bin/sh
+/usr/bin/bash
+/usr/sbin/nologin
+</code></pre>
+
+<p>其中 Bash 是绝大多数 Linux 系统默认的 Shell，虽然 Zsh Shell 没有被所有 Linux 预安装，但几乎每一款 Linux 都包含 Zsh Shell， 根据不同版本的 Linux 可以用 apt-get、yum 等包管理器进行安装。</p>
+
+<p>但是我们今天介绍的并非是 Zsh，而是 Oh My Zsh，这是个什么鬼了？虽说 Zsh Shell 很牛逼，但配置相当麻烦，所以阻挡了好多人尝试的勇气（我想这也是为啥 Zsh 不被 Linux 设为默认 Shell 的原因吧），但是永远不要低估一个爱折腾程序猿的创造力，国外一程序猿真就创造出了一款易于使用的 Zsh 版本：<a href="https://github.com/robbyrussell/oh-my-zsh">Oh My Zsh</a></p>
+
+<p>Oh My Zsh 几乎兼容日常使用的所有 Bash Shell 指令，让你可以无缝接入，不需要再去花额外的时间去适应。当然还扩展了大量炫酷的指令，要不然干嘛用它对吧，而且支持更换主题和插件机制。下面就开始搞起吧！</p>
+
+<h1 id="2-安装">2. 安装</h1>
+
+<p>安装 Oh My Zsh 首先需要安装 git 和 zsh，如果已经安装，请自行忽略。本文是基于 CentOS 介绍，其它 Linux 大致相同。</p>
+
+<h2 id="2-1-git-和-zsh-安装">2.1 git 和 zsh 安装</h2>
+
+<pre><code class="language-bash"># git
+sodu yum install git
+
+# zsh
+sodu yum install zsh
+</code></pre>
+
+<h2 id="2-2-oh-my-zsh-安装">2.2 Oh My Zsh 安装</h2>
+
+<p>Oh My Zsh 提供了 <code>curl</code> 和 <code>wget</code> 两种安装方式，选择任意一种自己方便的方式即可。</p>
+
+<pre><code class="language-bash"># via curl
+sudo sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+
+# via wget
+sudo sh -c &quot;$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)&quot;
+</code></pre>
+
+<h1 id="3-配置使用">3. 配置使用</h1>
+
+<h2 id="3-1-切换-shell">3.1 切换 Shell</h2>
+
+<p>安装完成之后，使用以下命令即可切换当前 Shell：</p>
+
+<pre><code class="language-bash">chsh -s /bin/zsh
+</code></pre>
+
+<p>退出当前终端连接，再次登入即可看到当前的 Shell 已经成功更改为 Oh My Zsh。</p>
+
+<h2 id="3-2-更改主题">3.2 更改主题</h2>
+
+<p>Oh My Zsh 的配置文件路径为：<code>~/.zshrc</code>，配置文件中的 <code>ZSH_THEME</code> 就是主题配置字段，如下默认为 <code>robbyrussell</code> 主题配色。更多主题配色可参考 <a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes">Oh My Zsh 主题</a>，这里我推荐是用 <code>ys</code> 主题。</p>
+
+<pre><code class="language-vim">ZSH_THEME=&quot;robbyrussell&quot;
+</code></pre>
+
+<h2 id="3-3-其它-linux-用户配置使用">3.3 其它 Linux 用户配置使用</h2>
+
+<p>Linux 其它用户想要使用 Oh My Zsh Shell，只需要拷贝当前用户家目录下的 <code>~/.zshrc</code> 配置文件到当想要使用 Oh My Zsh Shell 用户的家目录下即可。需要注意的是配置文件中 Oh My Zsh 安装路径其它用户可以访问的到，所以最好更改为绝对路径，如下：</p>
+
+<pre><code class="language-vim">export ZSH=/home/ehlxr/.oh-my-zsh
+</code></pre>
+
+<h1 id="4-插件配置">4. 插件配置</h1>
+
+<p>Oh My Zsh 支持插件机制，配置插件可以大大简化相关繁琐重复的命令。例如默认开启的 git 插件，就可以使用以下图表中的简写命令了：</p>
+
+<p><img src="https://ws2.sinaimg.cn/large/687148dbly1focmaot1m0j20jq0dcq3x.jpg" alt="Oh-My-Zsh Git Aliases" /></p>
+
+<p>那如何配置其它的插件了？只需要在 Oh My Zsh 的配置文件 <code>~/.zshrc</code> 中找到 <code>plugins=(git)</code> 字段，配置插件的名称即可，多个插件使用空格隔开。</p>
+
+<p>那支持哪些插件了？Oh My Zsh 安装目录下的 plugins 目录下就是支持的所有插件。例如：<code>ls ~/.oh-my-zsh/plugins</code> 就可以看到所有支持的插件名称了。</p>
+
+<p>Oh My Zsh 支持插件的简写说明可以参看 <a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins">oh-my-zsh Plugins wiki</a>。</p>
+
+<h1 id="5-常用命令简介">5. 常用命令简介</h1>
+
+<ul>
+<li><code>l</code> 等价与 <code>ls -la</code>，查看当前目录下所有文件。</li>
+<li>打开目录不需要再敲 <code>cd</code>，直接输入目录名即可。</li>
+<li><code>TAB</code> 提示更加聪明。</li>
+<li>聪明的历史记录，例如：敲下 <code>ls</code> 命令，按下键盘 <code>up</code> 按键，就会带出以 <code>ls</code> 开头的历史记录命令。</li>
+</ul>
+
+<h1 id="6-常用插件">6. 常用插件</h1>
+
+<blockquote>
+<p><code>.zshrc</code> 配置</p>
+</blockquote>
+
+<pre><code class="language-shell">export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_6_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_7_HOME=$(/usr/libexec/java_home -v 1.8)
+export JAVA_8_HOME=$(/usr/libexec/java_home -v 1.8)
+
+export ZSH=/Users/ehlxr/.oh-my-zsh
+
+ZSH_THEME=&quot;ys&quot;
+
+plugins=(git wd autojump sublime sudo zsh-autosuggestions zsh-syntax-highlighting extract history-substring-search)
+
+source $ZSH/oh-my-zsh.sh
+
+alias h=&quot;hexo cl &amp;&amp; hexo g &amp;&amp; gulp &amp;&amp; hexo d&quot;
+alias gacp='git add --all &amp;&amp; git commit -v &amp;&amp; git push'
+alias gacpm='git add --all &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push'
+alias js='j --stat'
+
+source ~/.bash_profile
+</code></pre>
+
+<h2 id="6-1-git-插件">6.1 git 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<p>直接在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>默认开启的插件，提供了大量 <code>git</code> 的 <code>alias</code> ，参看 <a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins">oh-my-zsh Plugins wiki</a>。</p>
+
+<h2 id="6-2-wd-插件">6.2 wd 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<p>直接在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>给常用目录添加一个标识，然后就可以快速的切换到常用的目录。参考 <a href="https://github.com/mfaerevaag/wd">wd</a> 。</p>
+
+<h2 id="6-3-autojump-插件">6.3 autojump 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<pre><code class="language-shell">  # Mac，可以使用 brew 安装：
+  $ brew install autojump
+
+  # CentOS 可以使用 yum 安装:
+  $ yum install -y epel-release
+  $ yum install -y autojump-zsh
+</code></pre>
+
+<p>然后在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p><code>autojump</code> 按照你的使用频率记录路径，使得目录的跳转更为方便。参考<a href="https://github.com/wting/autojump">autojump</a></p>
+
+<h2 id="6-4-sublime插件">6.4 sublime插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<p>直接在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>使用命令行打开 <code>sublime</code>。
+  常用命令如下：</p>
+
+<pre><code class="language-shell">  st          # 直接打开sublime
+  st file_a   # 用sublime打开文件 file
+  st dir_a    # 用sublime打开目录 dir
+  stt         # 在sublime打开当前目录，相当于 st .
+</code></pre>
+
+<h2 id="6-5-sudo-插件">6.5 sudo 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<p>直接在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>按 <code>2</code> 次 <code>esc</code> 会在命令前自动输入 <code>sudo</code></p>
+
+<h2 id="6-6-zsh-autosuggestions-插件">6.6 zsh-autosuggestions 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<pre><code class="language-shell">  $ git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+</code></pre>
+
+<p>然后在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>根据历史记录智能自动补全命令，输入命令时会以暗色补全，按方向键右键完成输入。</p>
+
+<h2 id="6-7-zsh-syntax-highlighting-插件">6.7 zsh-syntax-highlighting 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<pre><code class="language-shell">  $ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+</code></pre>
+
+<p>然后在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p><code>fish shell</code> 风格的语法高亮插件。输入的命令根据主题自动高亮。比如我的主题是 <code>ys-modified</code>，输入正确的命令是黄色，输入错误的命令是红色。</p>
+
+<h2 id="6-8-extract-插件">6.8 extract 插件</h2>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<p>直接在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>功能强大的解压插件，所有类型的文件解压一个命令 <code>x</code> 全搞定，再也不需要去记 <code>tar</code> 后面到底是哪几个参数了。</p>
+
+<h2 id="6-9-history-substring-search-插件">6.9 history-substring-search 插件</h2>
+
+<p>历史命令搜索插件，如果和 <code>zsh-syntax-highlighting</code> 插件共用，要配置到语法高亮插件之后。</p>
+
+<ul>
+<li>安装</li>
+</ul>
+
+<pre><code class="language-shell">  $ git clone https://github.com/zsh-users/zsh-history-substring-search.git $ZSH_CUSTOM/plugins/history-substring-search
+</code></pre>
+
+<p>然后在 <code>.zshrc</code> 中启用。</p>
+
+<ul>
+<li>效果</li>
+</ul>
+
+<p>上下键查询历史命令记录，可模糊匹配历史命令记录中任意字符串。</p>
+
+<hr />
+
+<!-- [2]: /images/post/OMZLogo_BnW.png -->
+
+<!-- [5]: /images/post/20160925141534.jpg -->
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2016/09/24/using-oh-my-zsh/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/linux/">Linux</a>
+          
+          <a href="/tags/zsh/">Zsh</a>
+          
+          <a href="/tags/shell/">Shell</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2016/09/28/%E9%97%B2%E8%A8%80%E7%A2%8E%E8%AF%AD%E4%B8%8D%E7%9F%A5%E6%89%80%E4%BA%91.../">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">闲言碎语，不知所云...</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2016/09/06/gogs-installation-introduction/">
+            <span class="next-text nav-default">5 分钟搭建 Git 服务器-Gogs</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: 'fc088fa113c9f78e8f3b7b41d96071df',
+        title: 'Oh My Zsh 替换你的 Bash Shell',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>

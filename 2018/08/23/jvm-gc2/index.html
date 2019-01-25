@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>JVM-垃圾回收（二） - 胡言乱语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="ehlxr" />
+  <meta name="description" content=" 接着上次 JVM 中 GC 机制的总结，这次主要复习一下垃圾收集的常用算法和 Minor GC、Full GC 相关的一些知识点。
+ 一、垃圾收集算法 1.1 标记 - 清除（Mark-Sweep） 算法分成 “标记”、“清除” 两个阶段：首先标记出所有需要回收的对象（两次标记），在标记完成后统一回收所有被标记的对象。如下图所示：
+" />
+<meta name="keywords" content="JVM,, Java,, gc" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.51" />
+
+
+<link rel="canonical" href="https://ehlxr.cf/2018/08/23/jvm-gc2/" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<link href="/dist/ehlxr.min.css?v=0.0.1" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+
+
+
+<link rel="stylesheet" href="/css/custom.css">
+
+
+<meta property="og:title" content="JVM-垃圾回收（二）" />
+<meta property="og:description" content="
+接着上次 JVM 中 GC 机制的总结，这次主要复习一下垃圾收集的常用算法和 Minor GC、Full GC 相关的一些知识点。
+
+
+一、垃圾收集算法
+
+1.1 标记 - 清除（Mark-Sweep）
+
+算法分成 “标记”、“清除” 两个阶段：首先标记出所有需要回收的对象（两次标记），在标记完成后统一回收所有被标记的对象。如下图所示：
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ehlxr.cf/2018/08/23/jvm-gc2/" /><meta property="article:published_time" content="2018-08-23T15:15:07&#43;00:00"/>
+<meta property="article:modified_time" content="2018-08-23T15:15:07&#43;00:00"/>
+
+<meta itemprop="name" content="JVM-垃圾回收（二）">
+<meta itemprop="description" content="
+接着上次 JVM 中 GC 机制的总结，这次主要复习一下垃圾收集的常用算法和 Minor GC、Full GC 相关的一些知识点。
+
+
+一、垃圾收集算法
+
+1.1 标记 - 清除（Mark-Sweep）
+
+算法分成 “标记”、“清除” 两个阶段：首先标记出所有需要回收的对象（两次标记），在标记完成后统一回收所有被标记的对象。如下图所示：
+
+">
+
+
+<meta itemprop="datePublished" content="2018-08-23T15:15:07&#43;00:00" />
+<meta itemprop="dateModified" content="2018-08-23T15:15:07&#43;00:00" />
+<meta itemprop="wordCount" content="1817">
+
+
+
+<meta itemprop="keywords" content="JVM,Java," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM-垃圾回收（二）"/>
+<meta name="twitter:description" content="
+接着上次 JVM 中 GC 机制的总结，这次主要复习一下垃圾收集的常用算法和 Minor GC、Full GC 相关的一些知识点。
+
+
+一、垃圾收集算法
+
+1.1 标记 - 清除（Mark-Sweep）
+
+算法分成 “标记”、“清除” 两个阶段：首先标记出所有需要回收的对象（两次标记），在标记完成后统一回收所有被标记的对象。如下图所示：
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div class="container" >
+    
+<div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">胡言乱语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/link/">
+        <li class="mobile-menu-item">友链</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="/search/">
+        <li class="mobile-menu-item">搜索</li>
+      </a>
+  </ul>
+</nav>
+
+    <header id="header" class="header">
+      <div class="header-div">
+        
+<div class="logo-wrapper">
+  <a href="/" class="logo">胡言乱语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+    <li class="menu-item ">
+        <a class="menu-item-link" href="/">
+          <i class="fa fa-fw fa-home"></i>
+          主页
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/post/">
+          <i class="fa fa-fw fa-archive"></i>
+          归档
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/tags/">
+          <i class="fa fa-fw fa-tags"></i>
+          标签
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/categories/">
+          <i class="fa fa-fw fa-th"></i>
+          分类
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/link/">
+          <i class="fa fa-fw fa-users"></i>
+          友链
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/about/">
+          <i class="fa fa-fw fa-user"></i>
+          关于
+        </a>
+      </li><li class="menu-item ">
+        <a class="menu-item-link" href="/search/">
+          <i class="fa fa-fw fa-search"></i>
+          搜索
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+      </div>
+    </header>
+    
+
+    <main id="main" class="main">
+      <div class="content-wrapper" id="mobile-panel">
+        <div id="content" class="content">
+          
+          
+
+          <article class="post">
+    
+    <header class="post-header single-post-header">
+      <h1 class="post-title">JVM-垃圾回收（二）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> <i class="fa fa-calendar" aria-hidden="true"></i> 2018-08-23 </span>
+        <div class="post-category">
+            | <i class="fa fa-folder" aria-hidden="true"></i>
+            
+              <a href="/categories/java-%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/"> Java 开发技术 </a>
+            
+          </div>
+        <span class="more-meta"> | <i class="fa fa-book" aria-hidden="true"></i> 约 1817 字 </span>
+        <span class="more-meta"> | <i class="fa fa-clock-o" aria-hidden="true"></i> 预计阅读 4 分钟 </span>
+        <span class="more-meta">
+          | <i class="fa fa-comment-o" aria-hidden="true"></i>
+          <a href="#gitalk-container" itemprop="discussionUrl">
+            <span class="post-comments-count gitalk-comment-count" itemprop="commentCount"></span>
+          </a>
+           条评论
+        </span>
+        | <i class="fa fa-eye"></i>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-垃圾收集算法">一、垃圾收集算法</a>
+<ul>
+<li><a href="#1-1-标记-清除-mark-sweep">1.1 标记 - 清除（Mark-Sweep）</a></li>
+<li><a href="#1-2-标记-整理-mark-compact">1.2 标记 - 整理（Mark-Compact）</a></li>
+<li><a href="#1-3-复制-copying">1.3 复制（Copying）</a></li>
+<li><a href="#1-4-分代收集">1.4 分代收集</a></li>
+</ul></li>
+<li><a href="#二-minor-gc-和-full-gc">二、Minor GC 和 Full GC</a>
+<ul>
+<li><a href="#2-1-minor-gc">2.1 Minor GC</a></li>
+<li><a href="#2-2-full-gc">2.2 Full GC</a></li>
+<li><a href="#2-3-full-gc-的触发条件">2.3 Full GC 的触发条件</a>
+<ul>
+<li><a href="#2-3-1-调用-system-gc">2.3.1 调用 <code>System.gc()</code></a></li>
+<li><a href="#2-3-2-老年代空间不足">2.3.2 老年代空间不足</a></li>
+<li><a href="#2-3-3-空间分配担保失败">2.3.3 空间分配担保失败</a></li>
+<li><a href="#2-3-4-jdk-1-7-及以前的永久代空间不足">2.3.4 JDK 1.7 及以前的永久代空间不足</a></li>
+<li><a href="#2-3-5-concurrent-mode-failure">2.3.5 Concurrent Mode Failure</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+  <div class="toc-taxonomy">
+    
+<div class="sidebar-category">
+    <hr>
+    <h5>
+        <a href="/categories/">分类排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/categories/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7" class="taxonomy-name">
+            开发工具
+            <span class="taxonomy-counts">8</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/java%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF" class="taxonomy-name">
+            java开发技术
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/sql" class="taxonomy-name">
+            sql
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E5%B9%B4%E6%9C%AB%E6%80%BB%E7%BB%93" class="taxonomy-name">
+            年末总结
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/categories/%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA" class="taxonomy-name">
+            持续构建
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+<div class="sidebar-tag">
+    <hr>
+    <h5>
+        <a href="/tags/">标签排行</a>
+    </h5>
+
+    
+        <a href="https://ehlxr.cf/tags/linux" class="taxonomy-name">
+            linux
+            <span class="taxonomy-counts">14</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/centos" class="taxonomy-name">
+            centos
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/git" class="taxonomy-name">
+            git
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/java" class="taxonomy-name">
+            java
+            <span class="taxonomy-counts">9</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/%E6%9D%82%E8%B0%88" class="taxonomy-name">
+            杂谈
+            <span class="taxonomy-counts">7</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/github" class="taxonomy-name">
+            github
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/go" class="taxonomy-name">
+            go
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/golang" class="taxonomy-name">
+            golang
+            <span class="taxonomy-counts">4</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/hexo" class="taxonomy-name">
+            hexo
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+        <a href="https://ehlxr.cf/tags/jvm" class="taxonomy-name">
+            jvm
+            <span class="taxonomy-counts">3</span>
+        </a>
+    
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="post-content">
+      <blockquote>
+<p>接着上次 JVM 中 GC 机制的总结，这次主要复习一下垃圾收集的常用算法和 Minor GC、Full GC 相关的一些知识点。</p>
+</blockquote>
+
+<h2 id="一-垃圾收集算法">一、垃圾收集算法</h2>
+
+<h3 id="1-1-标记-清除-mark-sweep">1.1 标记 - 清除（Mark-Sweep）</h3>
+
+<p>算法分成 “标记”、“清除” 两个阶段：首先标记出所有需要回收的对象（两次标记），在标记完成后统一回收所有被标记的对象。如下图所示：</p>
+
+<p><img src="https://wx4.sinaimg.cn/large/687148dbly1ftwah4c7cxj20gv07b0sz.jpg" alt="" /></p>
+
+<p>标记－清除算法的不足主要有以下两点：</p>
+
+<ul>
+<li><strong>空间问题</strong>，会产生大量不连续的内存碎片，导致无法给大对象分配内存。</li>
+<li><strong>效率问题</strong>，因为内存碎片的存在，操作会变得更加费时，因为查找下一个可用空闲块已不再是一个简单操作。</li>
+</ul>
+
+<h3 id="1-2-标记-整理-mark-compact">1.2 标记 - 整理（Mark-Compact）</h3>
+
+<p>此算法的标记过程与标记－清除算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉边界以外的内存。具体示意图如下所示：</p>
+
+<p><img src="/images/post/jvm-gc-3.jpg" alt="" /></p>
+
+<h3 id="1-3-复制-copying">1.3 复制（Copying）</h3>
+
+<p>将内存划分为大小相等的两块，每次只使用其中一块，当这一块内存用完了就将还存活的对象复制到另一块上面，然后再把使用过的内存空间进行一次清理。主要不足是只使用了内存的一半。</p>
+
+<p>复制算法过程：</p>
+
+<p><img src="/images/post/jvm-gc-4.jpg" alt="" /></p>
+
+<h3 id="1-4-分代收集">1.4 分代收集</h3>
+
+<p>JVM 采用分代收集（Generational Collection）算法，此算法相较于前几种没有什么新的特征，主要思想为：根据对象存活周期的不同将内存划分为几块，一般是把 Java 堆分为新生代和老年代，这样就可以根据各个年代的特点采用最适合的收集算法：</p>
+
+<ul>
+<li><strong>新生代使用复制算法</strong> 在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集。</li>
+<li><strong>老年代使用标记 - 清理 或者 标记 - 整理 算法</strong> 在老年代中，因为对象存活率高、没有额外空间对它进行分配担保，就必须使用 “标记 - 清除” 或 “标记 - 整理” 算法来进行回收。</li>
+</ul>
+
+<h2 id="二-minor-gc-和-full-gc">二、Minor GC 和 Full GC</h2>
+
+<h3 id="2-1-minor-gc">2.1 Minor GC</h3>
+
+<p>发生在新生代上，因为新生代对象存活时间很短，因此 Minor GC 会频繁执行，执行的速度一般也会比较快。</p>
+
+<p>Minor GC 会使用复制收集算法进行垃圾回收，但是并不是将内存划分为大小相等的两块，而是分为一块较大的 Eden 空间和两块较小的 Survivor 空间，每次使用 Eden 空间和其中一块 Survivor。在回收时，将 Eden 和 Survivor 中还存活着的对象一次性复制到另一块 Survivor 空间上，最后清理 Eden 和使用过的那一块 Survivor。HotSpot 虚拟机的 Eden 和 Survivor 的大小比例默认为 8:1，保证了内存的利用率达到 90%。如果每次回收有多于 10% 的对象存活，那么一块 Survivor 空间就不够用了，此时需要依赖于老年代进行分配担保，也就是借用老年代的空间存储放不下的对象。</p>
+
+<h3 id="2-2-full-gc">2.2 Full GC</h3>
+
+<p>发生在老年代上，老年代对象其存活时间长，因此 Full GC 很少执行，执行速度会比 Minor GC 慢很多。</p>
+
+<h3 id="2-3-full-gc-的触发条件">2.3 Full GC 的触发条件</h3>
+
+<p>对于 Minor GC，其触发条件非常简单，当 Eden 区空间满时，就将触发一次 Minor GC。而 Full GC 则相对复杂，有以下条件：</p>
+
+<h4 id="2-3-1-调用-system-gc">2.3.1 调用 <code>System.gc()</code></h4>
+
+<p>此方法的调用是建议 JVM 进行 Full GC，虽然只是建议而非一定，但很多情况下它会触发 Full GC，从而增加 Full GC 的频率，也即增加了间歇性停顿的次数。因此强烈建议能不使用此方法就不要使用，让虚拟机自己去管理它的内存，可通过 <code>-XX:+ DisableExplicitGC</code> 虚拟机参数来禁止 RMI 调用 <code>System.gc()</code>。</p>
+
+<h4 id="2-3-2-老年代空间不足">2.3.2 老年代空间不足</h4>
+
+<p>老年代空间不足的常见场景为大对象直接进入老年代、长期存活的对象进入老年代等。</p>
+
+<p>为了避免以上原因引起的 Full GC，应当尽量不要创建过大的对象以及数组。除此之外，可以通过 <code>-Xmn</code> 虚拟机参数调大新生代的大小，让对象尽量在新生代被回收掉，不进入老年代。还可以通过 <code>-XX:MaxTenuringThreshold</code> 虚拟机参数调大对象进入老年代的年龄，让对象在新生代多存活一段时间。</p>
+
+<h4 id="2-3-3-空间分配担保失败">2.3.3 空间分配担保失败</h4>
+
+<p>使用复制算法的 Minor GC 需要老年代的内存空间作担保，如果担保失败会执行一次 Full GC。</p>
+
+<h4 id="2-3-4-jdk-1-7-及以前的永久代空间不足">2.3.4 JDK 1.7 及以前的永久代空间不足</h4>
+
+<p>在 JDK 1.7 及以前，HotSpot 虚拟机中的方法区是用永久代实现的，永久代中存放的为一些 Class 的信息、常量、静态变量等数据，当系统中要加载的类、反射的类和调用的方法较多时，永久代可能会被占满，在未配置为采用 CMS 垃圾收集器的情况下也会执行 Full GC。如果经过 Full GC 仍然回收不了，那么虚拟机会抛出 <code>java.lang.OutOfMemoryError</code>。</p>
+
+<p>为避免以上原因引起的 Full GC，可采用的方法为增大永久代空间或转为使用 CMS 垃圾收集器。</p>
+
+<p>在 JDK 1.8 中用元空间替换了永久代作为方法区的实现，元空间是本地内存，因此减少了一种 Full GC 触发的可能性。</p>
+
+<h4 id="2-3-5-concurrent-mode-failure">2.3.5 Concurrent Mode Failure</h4>
+
+<p>使用 CMS 垃圾收集器执行的过程中，同时有对象要放入老年代，而此时老年代空间不足（有时候 “<strong>空间不足</strong>” 是指 CMS GC 当前的浮动垃圾过多导致暂时性的空间不足），便会报 <code>Concurrent Mode Failure</code> 错误，并触发 Full GC。</p>
+
+<hr />
+
+<p>&lt;!&ndash; <a href="https://wx4.sinaimg.cn/large/687148dbly1ftwah4c7cxj20gv07b0sz.jpg">2</a>: /images/post/jvm-gc-2.jpg</p>
+
+<p>&ndash;&gt;</p>
+    </div>
+
+    
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">本文链接</span>
+    <span class="item-content"><a href="https://ehlxr.cf/2018/08/23/jvm-gc2/" target="_blank">
+      <script>
+        document.write(decodeURI(location.origin + location.pathname))
+      </script>
+    </a></span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">版权声明</span>
+    <span class="item-content">
+        本博客所有文章除特别声明外，均采用 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a> 许可协议。转载请注明出处！</span>
+  </p>
+</div>
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/images/reward/wechat-0.JPG">
+        <span>微信打赏</span>
+      </label>
+    
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          
+          <a href="/tags/jvm/">JVM</a>
+          
+          <a href="/tags/java/">Java</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+          <a class="prev" href="/2018/12/31/summary-in-2018/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">恍恍惚惚又一年</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+          <a class="next" href="/2018/08/23/jvm-gc1/">
+            <span class="next-text nav-default">JVM-垃圾回收（一）</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div onclick="showDisqus();" id="disqus_title" class="disqus_title">显示 Disqus 评论</div><div id="gitalk-container" class="gitalk-container"></div>
+    <link rel="stylesheet" href="/lib/gitalk/gitalk.css">
+    <script src="/lib/gitalk/gitalk.min.js"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '6be83d4548fe11598be32f7097c1e95b',
+        title: 'JVM-垃圾回收（二）',
+        clientID: '4baff7711332437cab4d',
+        clientSecret: '1de35357cc48f0c54ec6595c130752cade8a6e97',
+        repo: 'ehlxr.github.io',
+        owner: 'ehlxr',
+        admin: ['ehlxr'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the
+      <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a>
+    </noscript><div id="disqus_thread"></div>
+    <script type="text/javascript">
+    
+    
+    
+    
+    
+    
+    
+
+    function showDisqus() {
+      $("#disqus_title").attr("style", "display:none");
+
+      
+      
+      
+      
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = false;
+      var disqus_shortname = 'ehlxr';
+      dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+      window.location.hash = "#disqus_thread";
+    }
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+      </div>
+
+    </main>
+    <footer id="footer" class="footer">
+      <div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 -
+    <a class="theme-link" href="https://github.com/ehlxr/hugo-theme-ehlxr">ehlxr</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    
+      2016 -
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author"><a href='https://ehlxr.me'>ehlxr</a></span>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+    <span class="division">|</span>
+    <span id="busuanzi_container_site_uv">
+      
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span>
+    </span>
+  </div>
+
+
+</div>
+    </footer>
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+<script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.2.0/dist/fuse.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/ehlxr.min.js?v=0.0.1"></script>
+
+
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+<script src="/js/custom.js"></script>
+
+</body>
+</html>
